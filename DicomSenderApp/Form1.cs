@@ -150,8 +150,6 @@ public partial class Form1 : Form
         {
             LogMessage($"Sending file {Path.GetFileName(selectedDicomFilePath)}...");
             
-            var dicomFile = await DicomFile.OpenAsync(selectedDicomFilePath);
-            
             var client = DicomClientFactory.Create(
                 txtTargetIP.Text, 
                 (int)numTargetPort.Value,
@@ -162,7 +160,7 @@ public partial class Form1 : Form
             client.AssociationReleased += (sender, args) => 
                 LogMessage("Association released");
                 
-            await client.AddRequestAsync(new DicomCStoreRequest(dicomFile.Dataset));
+            await client.AddRequestAsync(new DicomCStoreRequest(selectedDicomFilePath));
             await client.SendAsync();
             
             LogMessage("C-STORE completed successfully");
