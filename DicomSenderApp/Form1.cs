@@ -87,6 +87,44 @@ public partial class Form1 : Form
             selectedDicomFilePath = openFileDialog.FileName;
             lblSelectedFile.Text = Path.GetFileName(selectedDicomFilePath);
             LogMessage($"Selected file: {selectedDicomFilePath}");
+            
+            // Load DICOM tags from the selected file
+            LoadDicomTags();
+        }
+    }
+
+    private void LoadDicomTags()
+    {
+        if (string.IsNullOrEmpty(selectedDicomFilePath) || !File.Exists(selectedDicomFilePath))
+            return;
+            
+        try
+        {
+            var dicomFile = DicomFile.Open(selectedDicomFilePath);
+            var dataset = dicomFile.Dataset;
+            
+            // Extract and display patient info
+            if (dataset.Contains(DicomTag.PatientName))
+                txtPatientName.Text = dataset.GetSingleValue<string>(DicomTag.PatientName);
+                
+            if (dataset.Contains(DicomTag.PatientID))
+                txtPatientID.Text = dataset.GetSingleValue<string>(DicomTag.PatientID);
+                
+            // Extract and display UIDs
+            if (dataset.Contains(DicomTag.StudyInstanceUID))
+                txtStudyUID.Text = dataset.GetSingleValue<string>(DicomTag.StudyInstanceUID);
+                
+            if (dataset.Contains(DicomTag.SeriesInstanceUID))
+                txtSeriesUID.Text = dataset.GetSingleValue<string>(DicomTag.SeriesInstanceUID);
+                
+            if (dataset.Contains(DicomTag.SOPInstanceUID))
+                txtSOPInstanceUID.Text = dataset.GetSingleValue<string>(DicomTag.SOPInstanceUID);
+                
+            LogMessage("DICOM tags loaded from selected file");
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"Error loading DICOM tags: {ex.Message}");
         }
     }
 
@@ -148,7 +186,16 @@ public partial class Form1 : Form
 
         try
         {
-            LogMessage($"Sending file {Path.GetFileName(selectedDicomFilePath)}...");
+            string fileToSend = selectedDicomFilePath;
+            
+            // If tag modification is enabled, create a modified copy of the file
+            if (chkModifyTags.Checked)
+            {
+                fileToSend = Path.Combine(Path.GetTempPath(), $"modified_{Path.GetFileName(selectedDicomFilePath)}");
+                ModifyAndSaveDicomFile(selectedDicomFilePath, fileToSend);
+            }
+
+            LogMessage($"Sending file {Path.GetFileName(fileToSend)}...");
             
             var client = DicomClientFactory.Create(
                 txtTargetIP.Text, 
@@ -160,14 +207,67 @@ public partial class Form1 : Form
             client.AssociationReleased += (sender, args) => 
                 LogMessage("Association released");
                 
-            await client.AddRequestAsync(new DicomCStoreRequest(selectedDicomFilePath));
+            await client.AddRequestAsync(new DicomCStoreRequest(fileToSend));
             await client.SendAsync();
             
             LogMessage("C-STORE completed successfully");
+            
+            // Delete temporary file if it was created
+            if (fileToSend != selectedDicomFilePath && File.Exists(fileToSend))
+            {
+                try
+                {
+                    File.Delete(fileToSend);
+                }
+                catch
+                {
+                    // Ignore errors when deleting temp file
+                }
+            }
         }
         catch (Exception ex)
         {
             LogMessage($"C-STORE failed: {ex.Message}");
+        }
+    }
+
+    private void ModifyAndSaveDicomFile(string sourcePath, string destPath)
+    {
+        try
+        {
+            var dicomFile = DicomFile.Open(sourcePath);
+            var dataset = dicomFile.Dataset;
+            
+            // Modify patient information
+            if (!string.IsNullOrWhiteSpace(txtPatientName.Text))
+                dataset.AddOrUpdate(DicomTag.PatientName, txtPatientName.Text);
+                
+            if (!string.IsNullOrWhiteSpace(txtPatientID.Text))
+                dataset.AddOrUpdate(DicomTag.PatientID, txtPatientID.Text);
+                
+            // Modify UIDs
+            if (!string.IsNullOrWhiteSpace(txtStudyUID.Text))
+                dataset.AddOrUpdate(DicomTag.StudyInstanceUID, txtStudyUID.Text);
+                
+            if (!string.IsNullOrWhiteSpace(txtSeriesUID.Text))
+                dataset.AddOrUpdate(DicomTag.SeriesInstanceUID, txtSeriesUID.Text);
+                
+            if (!string.IsNullOrWhiteSpace(txtSOPInstanceUID.Text))
+                dataset.AddOrUpdate(DicomTag.SOPInstanceUID, txtSOPInstanceUID.Text);
+                
+            // Also update MediaStorageSOPInstanceUID in file meta if SOP Instance UID was changed
+            if (!string.IsNullOrWhiteSpace(txtSOPInstanceUID.Text))
+                dicomFile.FileMetaInfo.AddOrUpdate(DicomTag.MediaStorageSOPInstanceUID, txtSOPInstanceUID.Text);
+                
+            // Save modified file
+            dicomFile.Save(destPath);
+            
+            LogMessage("Created modified DICOM file with updated tags");
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"Error modifying DICOM file: {ex.Message}");
+            throw; // Rethrow to handle in the calling method
         }
     }
 
@@ -179,8 +279,30 @@ public partial class Form1 : Form
             return;
         }
 
-        txtLog.AppendText($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {message}{Environment.NewLine}");
+        txtLog.AppendText($"[{DateTime.Now:yyyy-MM-dd HH.mm.ss}] {message}{Environment.NewLine}");
         txtLog.ScrollToCaret();
+    }
+    
+    private void chkModifyTags_CheckedChanged(object sender, EventArgs e)
+    {
+        bool enableControls = chkModifyTags.Checked;
+        
+        txtPatientName.Enabled = enableControls;
+        txtPatientID.Enabled = enableControls;
+        txtStudyUID.Enabled = enableControls;
+        txtSeriesUID.Enabled = enableControls;
+        txtSOPInstanceUID.Enabled = enableControls;
+        btnGenerateUIDs.Enabled = enableControls;
+    }
+    
+    private void btnGenerateUIDs_Click(object sender, EventArgs e)
+    {
+        // Generate new UIDs
+        txtStudyUID.Text = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+        txtSeriesUID.Text = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+        txtSOPInstanceUID.Text = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
+        
+        LogMessage("New UIDs generated");
     }
 }
 
