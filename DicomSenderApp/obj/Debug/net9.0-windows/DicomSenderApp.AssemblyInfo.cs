@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DicomSenderApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6b5a6efaa96585f3d07003f37e43372b1d684d6b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ab39f9b134cb30e02efd470f4be1b8b165ba9613")]
 [assembly: System.Reflection.AssemblyProductAttribute("DicomSenderApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DicomSenderApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
