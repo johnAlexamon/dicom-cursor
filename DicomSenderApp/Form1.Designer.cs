@@ -62,11 +62,32 @@ partial class Form1
         this.label11 = new System.Windows.Forms.Label();
         this.txtConfidentialityCode = new System.Windows.Forms.TextBox();
         this.btnAbout = new System.Windows.Forms.Button();
+        this.tabControl = new System.Windows.Forms.TabControl();
+        this.tabPageSend = new System.Windows.Forms.TabPage();
+        this.tabPageWorklist = new System.Windows.Forms.TabPage();
+        this.groupBoxWorklistQuery = new System.Windows.Forms.GroupBox();
+        this.label12 = new System.Windows.Forms.Label();
+        this.txtWorklistPatientName = new System.Windows.Forms.TextBox();
+        this.label13 = new System.Windows.Forms.Label();
+        this.txtWorklistPatientID = new System.Windows.Forms.TextBox();
+        this.label14 = new System.Windows.Forms.Label();
+        this.txtAccessionNumber = new System.Windows.Forms.TextBox();
+        this.label15 = new System.Windows.Forms.Label();
+        this.dateTimeScheduled = new System.Windows.Forms.DateTimePicker();
+        this.chkUseDate = new System.Windows.Forms.CheckBox();
+        this.btnQueryWorklist = new System.Windows.Forms.Button();
+        this.dataGridWorklist = new System.Windows.Forms.DataGridView();
+        this.chkDebugLogging = new System.Windows.Forms.CheckBox();
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).BeginInit();
         this.groupBox1.SuspendLayout();
         this.groupBox2.SuspendLayout();
         this.groupBox3.SuspendLayout();
         this.groupBoxTags.SuspendLayout();
+        this.tabControl.SuspendLayout();
+        this.tabPageSend.SuspendLayout();
+        this.tabPageWorklist.SuspendLayout();
+        this.groupBoxWorklistQuery.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.dataGridWorklist)).BeginInit();
         this.SuspendLayout();
         // 
         // label1
@@ -409,16 +430,184 @@ partial class Form1
         this.btnAbout.UseVisualStyleBackColor = true;
         this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
         // 
+        // tabControl
+        // 
+        this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+        this.tabControl.Controls.Add(this.tabPageSend);
+        this.tabControl.Controls.Add(this.tabPageWorklist);
+        this.tabControl.Location = new System.Drawing.Point(12, 47);
+        this.tabControl.Name = "tabControl";
+        this.tabControl.SelectedIndex = 0;
+        this.tabControl.Size = new System.Drawing.Size(780, 666);
+        this.tabControl.TabIndex = 20;
+        // 
+        // tabPageSend
+        // 
+        this.tabPageSend.Controls.Add(this.groupBoxTags);
+        this.tabPageSend.Controls.Add(this.groupBox3);
+        this.tabPageSend.Controls.Add(this.groupBox2);
+        this.tabPageSend.Controls.Add(this.groupBox1);
+        this.tabPageSend.Location = new System.Drawing.Point(4, 29);
+        this.tabPageSend.Name = "tabPageSend";
+        this.tabPageSend.Padding = new System.Windows.Forms.Padding(3);
+        this.tabPageSend.Size = new System.Drawing.Size(772, 633);
+        this.tabPageSend.TabIndex = 0;
+        this.tabPageSend.Text = "DICOM Send";
+        this.tabPageSend.UseVisualStyleBackColor = true;
+        // 
+        // tabPageWorklist
+        // 
+        this.tabPageWorklist.Controls.Add(this.dataGridWorklist);
+        this.tabPageWorklist.Controls.Add(this.groupBoxWorklistQuery);
+        this.tabPageWorklist.Location = new System.Drawing.Point(4, 29);
+        this.tabPageWorklist.Name = "tabPageWorklist";
+        this.tabPageWorklist.Padding = new System.Windows.Forms.Padding(3);
+        this.tabPageWorklist.Size = new System.Drawing.Size(772, 633);
+        this.tabPageWorklist.TabIndex = 1;
+        this.tabPageWorklist.Text = "Modality Worklist";
+        this.tabPageWorklist.UseVisualStyleBackColor = true;
+        // 
+        // groupBoxWorklistQuery
+        // 
+        this.groupBoxWorklistQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+        this.groupBoxWorklistQuery.Controls.Add(this.chkDebugLogging);
+        this.groupBoxWorklistQuery.Controls.Add(this.btnQueryWorklist);
+        this.groupBoxWorklistQuery.Controls.Add(this.chkUseDate);
+        this.groupBoxWorklistQuery.Controls.Add(this.dateTimeScheduled);
+        this.groupBoxWorklistQuery.Controls.Add(this.label15);
+        this.groupBoxWorklistQuery.Controls.Add(this.txtAccessionNumber);
+        this.groupBoxWorklistQuery.Controls.Add(this.label14);
+        this.groupBoxWorklistQuery.Controls.Add(this.txtWorklistPatientID);
+        this.groupBoxWorklistQuery.Controls.Add(this.label13);
+        this.groupBoxWorklistQuery.Controls.Add(this.txtWorklistPatientName);
+        this.groupBoxWorklistQuery.Controls.Add(this.label12);
+        this.groupBoxWorklistQuery.Location = new System.Drawing.Point(6, 6);
+        this.groupBoxWorklistQuery.Name = "groupBoxWorklistQuery";
+        this.groupBoxWorklistQuery.Size = new System.Drawing.Size(760, 201);
+        this.groupBoxWorklistQuery.TabIndex = 0;
+        this.groupBoxWorklistQuery.TabStop = false;
+        this.groupBoxWorklistQuery.Text = "Worklist Query Parameters";
+        // 
+        // label12
+        // 
+        this.label12.AutoSize = true;
+        this.label12.Location = new System.Drawing.Point(14, 36);
+        this.label12.Name = "label12";
+        this.label12.Size = new System.Drawing.Size(102, 20);
+        this.label12.TabIndex = 0;
+        this.label12.Text = "Patient Name:";
+        // 
+        // txtWorklistPatientName
+        // 
+        this.txtWorklistPatientName.Location = new System.Drawing.Point(198, 33);
+        this.txtWorklistPatientName.Name = "txtWorklistPatientName";
+        this.txtWorklistPatientName.Size = new System.Drawing.Size(311, 27);
+        this.txtWorklistPatientName.TabIndex = 1;
+        // 
+        // label13
+        // 
+        this.label13.AutoSize = true;
+        this.label13.Location = new System.Drawing.Point(14, 69);
+        this.label13.Name = "label13";
+        this.label13.Size = new System.Drawing.Size(77, 20);
+        this.label13.TabIndex = 2;
+        this.label13.Text = "Patient ID:";
+        // 
+        // txtWorklistPatientID
+        // 
+        this.txtWorklistPatientID.Location = new System.Drawing.Point(198, 66);
+        this.txtWorklistPatientID.Name = "txtWorklistPatientID";
+        this.txtWorklistPatientID.Size = new System.Drawing.Size(311, 27);
+        this.txtWorklistPatientID.TabIndex = 3;
+        // 
+        // label14
+        // 
+        this.label14.AutoSize = true;
+        this.label14.Location = new System.Drawing.Point(14, 102);
+        this.label14.Name = "label14";
+        this.label14.Size = new System.Drawing.Size(140, 20);
+        this.label14.TabIndex = 4;
+        this.label14.Text = "Accession Number:";
+        // 
+        // txtAccessionNumber
+        // 
+        this.txtAccessionNumber.Location = new System.Drawing.Point(198, 99);
+        this.txtAccessionNumber.Name = "txtAccessionNumber";
+        this.txtAccessionNumber.Size = new System.Drawing.Size(311, 27);
+        this.txtAccessionNumber.TabIndex = 5;
+        // 
+        // label15
+        // 
+        this.label15.AutoSize = true;
+        this.label15.Location = new System.Drawing.Point(14, 135);
+        this.label15.Name = "label15";
+        this.label15.Size = new System.Drawing.Size(178, 20);
+        this.label15.TabIndex = 6;
+        this.label15.Text = "Scheduled Procedure Date:";
+        // 
+        // dateTimeScheduled
+        // 
+        this.dateTimeScheduled.Enabled = false;
+        this.dateTimeScheduled.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+        this.dateTimeScheduled.Location = new System.Drawing.Point(198, 132);
+        this.dateTimeScheduled.Name = "dateTimeScheduled";
+        this.dateTimeScheduled.Size = new System.Drawing.Size(163, 27);
+        this.dateTimeScheduled.TabIndex = 7;
+        // 
+        // chkUseDate
+        // 
+        this.chkUseDate.AutoSize = true;
+        this.chkUseDate.Location = new System.Drawing.Point(367, 134);
+        this.chkUseDate.Name = "chkUseDate";
+        this.chkUseDate.Size = new System.Drawing.Size(142, 24);
+        this.chkUseDate.TabIndex = 8;
+        this.chkUseDate.Text = "Include date filter";
+        this.chkUseDate.UseVisualStyleBackColor = true;
+        this.chkUseDate.CheckedChanged += new System.EventHandler(this.chkUseDate_CheckedChanged);
+        // 
+        // btnQueryWorklist
+        // 
+        this.btnQueryWorklist.Location = new System.Drawing.Point(198, 165);
+        this.btnQueryWorklist.Name = "btnQueryWorklist";
+        this.btnQueryWorklist.Size = new System.Drawing.Size(163, 29);
+        this.btnQueryWorklist.TabIndex = 9;
+        this.btnQueryWorklist.Text = "Query Worklist";
+        this.btnQueryWorklist.UseVisualStyleBackColor = true;
+        this.btnQueryWorklist.Click += new System.EventHandler(this.btnQueryWorklist_Click);
+        // 
+        // dataGridWorklist
+        // 
+        this.dataGridWorklist.AllowUserToAddRows = false;
+        this.dataGridWorklist.AllowUserToDeleteRows = false;
+        this.dataGridWorklist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+        this.dataGridWorklist.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+        this.dataGridWorklist.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        this.dataGridWorklist.Location = new System.Drawing.Point(6, 213);
+        this.dataGridWorklist.Name = "dataGridWorklist";
+        this.dataGridWorklist.ReadOnly = true;
+        this.dataGridWorklist.RowHeadersWidth = 51;
+        this.dataGridWorklist.RowTemplate.Height = 29;
+        this.dataGridWorklist.Size = new System.Drawing.Size(760, 414);
+        this.dataGridWorklist.TabIndex = 1;
+        // 
+        // chkDebugLogging
+        // 
+        this.chkDebugLogging.AutoSize = true;
+        this.chkDebugLogging.Location = new System.Drawing.Point(367, 165);
+        this.chkDebugLogging.Name = "chkDebugLogging";
+        this.chkDebugLogging.Size = new System.Drawing.Size(188, 24);
+        this.chkDebugLogging.TabIndex = 10;
+        this.chkDebugLogging.Text = "Enable detailed logging";
+        this.chkDebugLogging.UseVisualStyleBackColor = true;
+        this.chkDebugLogging.CheckedChanged += new System.EventHandler(this.chkDebugLogging_CheckedChanged);
+        // 
         // Form1
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(804, 725);
+        this.Controls.Add(this.tabControl);
         this.Controls.Add(this.btnAbout);
-        this.Controls.Add(this.groupBoxTags);
-        this.Controls.Add(this.groupBox3);
-        this.Controls.Add(this.groupBox2);
-        this.Controls.Add(this.groupBox1);
         this.MinimumSize = new System.Drawing.Size(820, 750);
         this.Name = "Form1";
         this.Text = "Alexamon DICOM Sender";
@@ -431,6 +620,12 @@ partial class Form1
         this.groupBox3.PerformLayout();
         this.groupBoxTags.ResumeLayout(false);
         this.groupBoxTags.PerformLayout();
+        this.tabControl.ResumeLayout(false);
+        this.tabPageSend.ResumeLayout(false);
+        this.tabPageWorklist.ResumeLayout(false);
+        this.groupBoxWorklistQuery.ResumeLayout(false);
+        this.groupBoxWorklistQuery.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.dataGridWorklist)).EndInit();
         this.ResumeLayout(false);
     }
 
@@ -470,4 +665,20 @@ partial class Form1
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.TextBox txtConfidentialityCode;
     private System.Windows.Forms.Button btnAbout;
+    private System.Windows.Forms.TabControl tabControl;
+    private System.Windows.Forms.TabPage tabPageSend;
+    private System.Windows.Forms.TabPage tabPageWorklist;
+    private System.Windows.Forms.GroupBox groupBoxWorklistQuery;
+    private System.Windows.Forms.Button btnQueryWorklist;
+    private System.Windows.Forms.CheckBox chkUseDate;
+    private System.Windows.Forms.DateTimePicker dateTimeScheduled;
+    private System.Windows.Forms.Label label15;
+    private System.Windows.Forms.TextBox txtAccessionNumber;
+    private System.Windows.Forms.Label label14;
+    private System.Windows.Forms.TextBox txtWorklistPatientID;
+    private System.Windows.Forms.Label label13;
+    private System.Windows.Forms.TextBox txtWorklistPatientName;
+    private System.Windows.Forms.Label label12;
+    private System.Windows.Forms.DataGridView dataGridWorklist;
+    private System.Windows.Forms.CheckBox chkDebugLogging;
 }

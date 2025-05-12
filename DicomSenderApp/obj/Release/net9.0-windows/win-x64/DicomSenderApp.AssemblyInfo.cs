@@ -11,10 +11,10 @@ using System;
 using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("Alexamon")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("© 2025 Alexamon. All rights reserved.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0+0908b5f07c979c8ed9edb60538c8a3f218bb19f2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0+ea54ad977cdf28ea35fefc777774814b671180e4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Alexamon DICOM Sender")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DicomSenderApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.1.0")]
