@@ -61,6 +61,7 @@ partial class Form1
         this.btnGenerateUIDs = new System.Windows.Forms.Button();
         this.label11 = new System.Windows.Forms.Label();
         this.txtConfidentialityCode = new System.Windows.Forms.TextBox();
+        this.btnAbout = new System.Windows.Forms.Button();
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).BeginInit();
         this.groupBox1.SuspendLayout();
         this.groupBox2.SuspendLayout();
@@ -397,18 +398,30 @@ partial class Form1
         this.txtConfidentialityCode.Size = new System.Drawing.Size(273, 27);
         this.txtConfidentialityCode.TabIndex = 13;
         // 
+        // btnAbout
+        // 
+        this.btnAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        this.btnAbout.Location = new System.Drawing.Point(696, 12);
+        this.btnAbout.Name = "btnAbout";
+        this.btnAbout.Size = new System.Drawing.Size(96, 29);
+        this.btnAbout.TabIndex = 19;
+        this.btnAbout.Text = "About";
+        this.btnAbout.UseVisualStyleBackColor = true;
+        this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+        // 
         // Form1
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(804, 725);
+        this.Controls.Add(this.btnAbout);
         this.Controls.Add(this.groupBoxTags);
         this.Controls.Add(this.groupBox3);
         this.Controls.Add(this.groupBox2);
         this.Controls.Add(this.groupBox1);
         this.MinimumSize = new System.Drawing.Size(820, 750);
         this.Name = "Form1";
-        this.Text = "DICOM Sender";
+        this.Text = "Alexamon DICOM Sender";
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).EndInit();
         this.groupBox1.ResumeLayout(false);
         this.groupBox1.PerformLayout();
@@ -456,4 +469,5 @@ partial class Form1
     private System.Windows.Forms.Button btnGenerateUIDs;
     private System.Windows.Forms.Label label11;
     private System.Windows.Forms.TextBox txtConfidentialityCode;
+    private System.Windows.Forms.Button btnAbout;
 }

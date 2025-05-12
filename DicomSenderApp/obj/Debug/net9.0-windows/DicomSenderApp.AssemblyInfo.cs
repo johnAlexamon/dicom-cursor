@@ -10,13 +10,14 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("DicomSenderApp")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Alexamon")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ab39f9b134cb30e02efd470f4be1b8b165ba9613")]
-[assembly: System.Reflection.AssemblyProductAttribute("DicomSenderApp")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("© 2025 Alexamon. All rights reserved.")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0+623e6a868bcb37ec1e16b790180feb4fe0f3c162")]
+[assembly: System.Reflection.AssemblyProductAttribute("Alexamon DICOM Sender")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DicomSenderApp")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.1.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]
 

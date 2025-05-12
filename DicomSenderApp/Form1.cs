@@ -313,6 +313,12 @@ public partial class Form1 : Form
         
         LogMessage("New UIDs generated");
     }
+    
+    private void btnAbout_Click(object sender, EventArgs e)
+    {
+        using var aboutForm = new AboutForm();
+        aboutForm.ShowDialog(this);
+    }
 }
 
 public class DicomConfig
