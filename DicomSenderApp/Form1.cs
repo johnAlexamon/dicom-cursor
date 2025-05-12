@@ -120,6 +120,10 @@ public partial class Form1 : Form
             if (dataset.Contains(DicomTag.SOPInstanceUID))
                 txtSOPInstanceUID.Text = dataset.GetSingleValue<string>(DicomTag.SOPInstanceUID);
                 
+            // Extract and display Confidentiality Code
+            if (dataset.Contains(DicomTag.Parse("0040,1008")))
+                txtConfidentialityCode.Text = dataset.GetSingleValue<string>(DicomTag.Parse("0040,1008"));
+                
             LogMessage("DICOM tags loaded from selected file");
         }
         catch (Exception ex)
@@ -259,6 +263,10 @@ public partial class Form1 : Form
             if (!string.IsNullOrWhiteSpace(txtSOPInstanceUID.Text))
                 dicomFile.FileMetaInfo.AddOrUpdate(DicomTag.MediaStorageSOPInstanceUID, txtSOPInstanceUID.Text);
                 
+            // Modify Confidentiality Code
+            if (!string.IsNullOrWhiteSpace(txtConfidentialityCode.Text))
+                dataset.AddOrUpdate(DicomTag.Parse("0040,1008"), txtConfidentialityCode.Text);
+                
             // Save modified file
             dicomFile.Save(destPath);
             
@@ -292,6 +300,7 @@ public partial class Form1 : Form
         txtStudyUID.Enabled = enableControls;
         txtSeriesUID.Enabled = enableControls;
         txtSOPInstanceUID.Enabled = enableControls;
+        txtConfidentialityCode.Enabled = enableControls;
         btnGenerateUIDs.Enabled = enableControls;
     }
     

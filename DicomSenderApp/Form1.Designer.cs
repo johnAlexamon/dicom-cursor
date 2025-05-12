@@ -59,6 +59,8 @@ partial class Form1
         this.label10 = new System.Windows.Forms.Label();
         this.txtSOPInstanceUID = new System.Windows.Forms.TextBox();
         this.btnGenerateUIDs = new System.Windows.Forms.Button();
+        this.label11 = new System.Windows.Forms.Label();
+        this.txtConfidentialityCode = new System.Windows.Forms.TextBox();
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).BeginInit();
         this.groupBox1.SuspendLayout();
         this.groupBox2.SuspendLayout();
@@ -250,6 +252,8 @@ partial class Form1
         // 
         // groupBoxTags
         // 
+        this.groupBoxTags.Controls.Add(this.txtConfidentialityCode);
+        this.groupBoxTags.Controls.Add(this.label11);
         this.groupBoxTags.Controls.Add(this.btnGenerateUIDs);
         this.groupBoxTags.Controls.Add(this.txtSOPInstanceUID);
         this.groupBoxTags.Controls.Add(this.label10);
@@ -264,7 +268,7 @@ partial class Form1
         this.groupBoxTags.Controls.Add(this.chkModifyTags);
         this.groupBoxTags.Location = new System.Drawing.Point(12, 289);
         this.groupBoxTags.Name = "groupBoxTags";
-        this.groupBoxTags.Size = new System.Drawing.Size(780, 150);
+        this.groupBoxTags.Size = new System.Drawing.Size(780, 180);
         this.groupBoxTags.TabIndex = 18;
         this.groupBoxTags.TabStop = false;
         this.groupBoxTags.Text = "Modify DICOM Tags";
@@ -376,6 +380,23 @@ partial class Form1
         this.btnGenerateUIDs.UseVisualStyleBackColor = true;
         this.btnGenerateUIDs.Click += new System.EventHandler(this.btnGenerateUIDs_Click);
         // 
+        // label11
+        // 
+        this.label11.AutoSize = true;
+        this.label11.Location = new System.Drawing.Point(350, 126);
+        this.label11.Name = "label11";
+        this.label11.Size = new System.Drawing.Size(141, 20);
+        this.label11.TabIndex = 12;
+        this.label11.Text = "Confidentiality Code:";
+        // 
+        // txtConfidentialityCode
+        // 
+        this.txtConfidentialityCode.Enabled = false;
+        this.txtConfidentialityCode.Location = new System.Drawing.Point(497, 123);
+        this.txtConfidentialityCode.Name = "txtConfidentialityCode";
+        this.txtConfidentialityCode.Size = new System.Drawing.Size(273, 27);
+        this.txtConfidentialityCode.TabIndex = 13;
+        // 
         // Form1
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -433,4 +454,6 @@ partial class Form1
     private System.Windows.Forms.Label label10;
     private System.Windows.Forms.TextBox txtSOPInstanceUID;
     private System.Windows.Forms.Button btnGenerateUIDs;
+    private System.Windows.Forms.Label label11;
+    private System.Windows.Forms.TextBox txtConfidentialityCode;
 }
