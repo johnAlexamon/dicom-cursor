@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
 using HL7.Dotnetcore;
+using System.Linq;
 
 namespace DicomSenderApp;
 
@@ -19,6 +20,8 @@ public partial class Form1
     private Button btnSelectHL7File;
     private Button btnSendHL7;
     private Button btnSaveHL7Config;
+    private CheckBox chkHL7DebugLogging;
+    private bool hl7DebugLoggingEnabled = false;
     
     private void InitializeHL7Tab()
     {
@@ -131,11 +134,22 @@ public partial class Form1
             Size = new System.Drawing.Size(160, 29)
         };
         
+        // Add debug logging checkbox
+        chkHL7DebugLogging = new CheckBox
+        {
+            Text = "Enable detailed logging",
+            Location = new System.Drawing.Point(350, 59),
+            Size = new System.Drawing.Size(188, 29),
+            Checked = hl7DebugLoggingEnabled
+        };
+        chkHL7DebugLogging.CheckedChanged += chkHL7DebugLogging_CheckedChanged;
+        
         // Add controls to operations group
         groupHL7Operations.Controls.Add(btnSelectHL7File);
         groupHL7Operations.Controls.Add(lblSelectedHL7File);
         groupHL7Operations.Controls.Add(btnSaveHL7Config);
         groupHL7Operations.Controls.Add(btnSendHL7);
+        groupHL7Operations.Controls.Add(chkHL7DebugLogging);
         
         // Create preview group
         GroupBox groupHL7Preview = new GroupBox
@@ -252,7 +266,14 @@ public partial class Form1
             try
             {
                 var message = new HL7.Dotnetcore.Message(content);
-                LogMessage("HL7 message loaded and validated successfully");
+                string messageType = message.GetValue("MSH.9");
+                string sendingApp = message.GetValue("MSH.3");
+                string receivingApp = message.GetValue("MSH.5");
+                
+                LogMessage($"HL7 message loaded successfully: {messageType} from {sendingApp} to {receivingApp}");
+                LogHL7Debug($"Message control ID: {message.GetValue("MSH.10")}");
+                LogHL7Debug($"Message segments: {message.SegmentCount}");
+                LogHL7Debug($"Message version: {message.GetValue("MSH.12")}");
             }
             catch (Exception ex)
             {
@@ -288,9 +309,15 @@ public partial class Form1
         try
         {
             string content = File.ReadAllText(selectedHL7FilePath);
+            LogHL7Debug($"File content length: {content.Length} characters");
             
             // Create HL7 message
             var message = new HL7.Dotnetcore.Message(content);
+            string messageType = message.GetValue("MSH.9");
+            string messageControlId = message.GetValue("MSH.10");
+            
+            LogHL7Debug($"HL7 message parsed successfully - Type: {messageType}, Control ID: {messageControlId}");
+            LogHL7Debug($"Message contains {message.SegmentCount} segments");
             
             // HL7 requires specific characters for message framing:
             // VT (Vertical Tab) at the start: ASCII 11 (0x0B)
@@ -300,7 +327,9 @@ public partial class Form1
             byte[] endBytes = new byte[] { 0x1C, 0x0D }; // FS, CR
             
             // Build the complete message with framing
-            byte[] messageBytes = Encoding.UTF8.GetBytes(message.SerializeMessage(false));
+            string serializedMessage = message.SerializeMessage(false);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(serializedMessage);
+            LogHL7Debug($"Serialized message length: {serializedMessage.Length} characters");
             
             // Create the framed message
             byte[] framedMessage = new byte[startBytes.Length + messageBytes.Length + endBytes.Length];
@@ -308,33 +337,45 @@ public partial class Form1
             messageBytes.CopyTo(framedMessage, startBytes.Length);
             endBytes.CopyTo(framedMessage, startBytes.Length + messageBytes.Length);
             
+            LogHL7Debug($"Framed message length: {framedMessage.Length} bytes (includes VT, FS, CR control chars)");
             LogMessage($"Sending HL7 message to {txtHL7TargetIP.Text}:{numHL7TargetPort.Value}...");
             
             // Connect and send
             using (var client = new TcpClient())
             {
+                LogHL7Debug($"Attempting to connect to {txtHL7TargetIP.Text}:{numHL7TargetPort.Value}...");
+                
                 // Connect with timeout
                 var connectTask = client.ConnectAsync(txtHL7TargetIP.Text, (int)numHL7TargetPort.Value);
                 
                 // Wait for connection with timeout
                 var timeoutTask = Task.Delay(5000); // 5 second timeout
+                LogHL7Debug("Waiting for connection (timeout: 5 seconds)...");
+                
                 var completedTask = await Task.WhenAny(connectTask, timeoutTask);
                 
                 if (completedTask == timeoutTask)
                 {
+                    LogMessage("Connection timeout after 5 seconds");
                     throw new TimeoutException("Connection timed out after 5 seconds");
                 }
+                
+                LogHL7Debug("Connected successfully");
+                LogHL7Debug($"Local endpoint: {client.Client.LocalEndPoint}, Remote endpoint: {client.Client.RemoteEndPoint}");
                 
                 // Get stream and send message
                 using (var stream = client.GetStream())
                 {
+                    LogHL7Debug("Network stream obtained, sending message...");
                     await stream.WriteAsync(framedMessage, 0, framedMessage.Length);
+                    LogHL7Debug($"Message sent ({framedMessage.Length} bytes)");
                     
                     // Wait for ACK response
                     byte[] responseBuffer = new byte[4096];
                     
                     // Set read timeout
                     stream.ReadTimeout = 5000; // 5 seconds
+                    LogHL7Debug("Waiting for acknowledgment (timeout: 5 seconds)...");
                     
                     // Read response asynchronously with timeout
                     var readTask = stream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
@@ -343,59 +384,137 @@ public partial class Form1
                     completedTask = await Task.WhenAny(readTask, timeoutTask);
                     if (completedTask == timeoutTask)
                     {
+                        LogMessage("Timeout waiting for ACK response (5 seconds)");
                         throw new TimeoutException("Timeout waiting for ACK response");
                     }
                     
                     int bytesRead = await readTask;
+                    LogHL7Debug($"Received {bytesRead} bytes from server");
                     
                     if (bytesRead > 0)
                     {
+                        // Log raw bytes in hexadecimal for debugging
+                        if (hl7DebugLoggingEnabled)
+                        {
+                            StringBuilder hexDump = new StringBuilder("Raw response bytes: ");
+                            for (int i = 0; i < Math.Min(bytesRead, 50); i++)
+                            {
+                                hexDump.Append(responseBuffer[i].ToString("X2") + " ");
+                            }
+                            if (bytesRead > 50)
+                            {
+                                hexDump.Append("...");
+                            }
+                            LogHL7Debug(hexDump.ToString());
+                        }
+                        
                         // Extract the response, ignoring the framing characters
                         string response = Encoding.UTF8.GetString(responseBuffer, 1, bytesRead - 3);
+                        LogHL7Debug($"Response content: {response}");
                         
                         try
                         {
                             // Parse the ACK message
                             var ackMessage = new HL7.Dotnetcore.Message(response);
                             string ackCode = ackMessage.GetValue("MSA.1");
+                            string ackControlId = ackMessage.GetValue("MSA.2");
+                            
+                            LogHL7Debug($"ACK parsed successfully - Code: {ackCode}, Control ID: {ackControlId}");
                             
                             if (ackCode == "AA")
                             {
-                                LogMessage("HL7 message sent successfully and acknowledged (AA)");
+                                LogMessage($"HL7 message sent successfully and acknowledged (AA) - Control ID: {ackControlId}");
                             }
                             else if (ackCode == "AE")
                             {
-                                LogMessage($"HL7 message had errors (AE): {ackMessage.GetValue("MSA.3")}");
+                                string errorText = ackMessage.GetValue("MSA.3");
+                                LogMessage($"HL7 message had errors (AE): {errorText} - Control ID: {ackControlId}");
+                                
+                                // Check for error details in ERR segment
+                                try 
+                                {
+                                    // Try to directly access ERR segment data if it exists
+                                    string errorDetails = ackMessage.GetValue("ERR.3");
+                                    if (!string.IsNullOrEmpty(errorDetails))
+                                    {
+                                        LogHL7Debug($"Error details: {errorDetails}");
+                                    }
+                                }
+                                catch 
+                                {
+                                    // No ERR segment or can't access it
+                                    LogHL7Debug("No detailed error information available");
+                                }
                             }
                             else if (ackCode == "AR")
                             {
-                                LogMessage($"HL7 message rejected (AR): {ackMessage.GetValue("MSA.3")}");
+                                string rejectText = ackMessage.GetValue("MSA.3");
+                                LogMessage($"HL7 message rejected (AR): {rejectText} - Control ID: {ackControlId}");
                             }
                             else
                             {
-                                LogMessage($"Received ACK with unknown code: {ackCode}");
+                                LogMessage($"Received ACK with unknown code: {ackCode} - Control ID: {ackControlId}");
                             }
                         }
                         catch (Exception ex)
                         {
                             LogMessage($"Received response but failed to parse ACK: {ex.Message}");
+                            LogHL7Debug($"ACK parse exception details: {ex}");
                             LogMessage($"Raw response: {response}");
                         }
                     }
                     else
                     {
-                        LogMessage("No acknowledgment received from server");
+                        LogMessage("No acknowledgment received from server (0 bytes)");
+                        LogHL7Debug("Socket info - Connected: " + client.Client.Connected);
+                        LogHL7Debug("Socket info - Available: " + client.Available);
+                        
+                        // Try to check if socket is still open
+                        try
+                        {
+                            bool isConnected = !(client.Client.Poll(1, SelectMode.SelectRead) && client.Client.Available == 0);
+                            LogHL7Debug("Socket poll result - Still connected: " + isConnected);
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHL7Debug("Socket polling error: " + ex.Message);
+                        }
                     }
                 }
+            }
+        }
+        catch (SocketException socketEx)
+        {
+            LogMessage($"Socket error sending HL7 message: {socketEx.Message} (Error code: {socketEx.ErrorCode})");
+            LogHL7Debug($"Socket exception details: SocketErrorCode={socketEx.SocketErrorCode}, Native error={socketEx.NativeErrorCode}");
+            if (socketEx.InnerException != null)
+            {
+                LogHL7Debug($"Inner exception: {socketEx.InnerException.Message}");
             }
         }
         catch (Exception ex)
         {
             LogMessage($"Error sending HL7 message: {ex.Message}");
+            LogHL7Debug($"Exception details: {ex.GetType().Name} - {ex}");
             if (ex.InnerException != null)
             {
-                LogMessage($"Inner exception: {ex.InnerException.Message}");
+                LogHL7Debug($"Inner exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
             }
+        }
+    }
+    
+    private void chkHL7DebugLogging_CheckedChanged(object sender, EventArgs e)
+    {
+        hl7DebugLoggingEnabled = chkHL7DebugLogging.Checked;
+        LogMessage($"HL7 debug logging {(hl7DebugLoggingEnabled ? "enabled" : "disabled")}", false);
+    }
+    
+    // Helper method for HL7-specific debug logging
+    private void LogHL7Debug(string message)
+    {
+        if (hl7DebugLoggingEnabled)
+        {
+            LogMessage("[HL7 DEBUG] " + message, true);
         }
     }
 } 
