@@ -473,13 +473,12 @@ public partial class Form1 : Form
     
     private DicomCFindRequest CreateWorklistRequest()
     {
-        // Create a C-FIND request for modality worklist SOP class
-        var request = new DicomCFindRequest(DicomQueryRetrieveLevel.NotApplicable);
+        // Create a C-FIND request for modality worklist SOP class with explicit UID
+        var request = new DicomCFindRequest(DicomUID.ModalityWorklistInformationModelFind, DicomPriority.Medium);
         
         // Add required fields for Modality Worklist Information Model
         request.Dataset.AddOrUpdate(DicomTag.SpecificCharacterSet, "ISO_IR 100");
-        
-        // Add all the return fields we want to see in our results
+        // Add all the return fields we want to see in our results as empty strings (wildcards)
         request.Dataset.AddOrUpdate(DicomTag.PatientName, "");
         request.Dataset.AddOrUpdate(DicomTag.PatientID, "");
         request.Dataset.AddOrUpdate(DicomTag.AccessionNumber, "");
@@ -491,31 +490,51 @@ public partial class Form1 : Form
         request.Dataset.AddOrUpdate(DicomTag.StudyDescription, "");
         request.Dataset.AddOrUpdate(DicomTag.RequestedProcedureDescription, "");
         
+        LogMessage("Created worklist C-FIND request", isDebug: true);
+        
         return request;
     }
     
     private void AddQueryParameters(DicomCFindRequest request)
     {
+        // Track if any specific filters were applied
+        bool hasFilters = false;
+        
         // Add search parameters based on form input
         if (!string.IsNullOrWhiteSpace(txtWorklistPatientName.Text))
         {
             request.Dataset.AddOrUpdate(DicomTag.PatientName, txtWorklistPatientName.Text + "*");
+            hasFilters = true;
         }
         
         if (!string.IsNullOrWhiteSpace(txtWorklistPatientID.Text))
         {
             request.Dataset.AddOrUpdate(DicomTag.PatientID, txtWorklistPatientID.Text);
+            hasFilters = true;
         }
         
         if (!string.IsNullOrWhiteSpace(txtAccessionNumber.Text))
         {
             request.Dataset.AddOrUpdate(DicomTag.AccessionNumber, txtAccessionNumber.Text);
+            hasFilters = true;
         }
         
         if (chkUseDate.Checked)
         {
             request.Dataset.AddOrUpdate(DicomTag.ScheduledProcedureStepStartDate, 
                 dateTimeScheduled.Value.ToString("yyyyMMdd"));
+            hasFilters = true;
+        }
+        
+        // Log whether this is a filtered query or returning all entries
+        if (hasFilters)
+        {
+            LogMessage("Sending worklist query with filters", isDebug: true);
+        }
+        else
+        {
+            LogMessage("Sending worklist query to retrieve ALL entries (no filters)", isDebug: true);
+            // When no filters are applied, the empty strings in the dataset will match all entries
         }
     }
     

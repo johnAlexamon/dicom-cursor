@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("© 2025 Alexamon. All rights reserved.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0+0908b5f07c979c8ed9edb60538c8a3f218bb19f2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.1.0+21dd0930cae8f44e9d9680c3c7056df16a30d1c6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Alexamon DICOM Sender")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DicomSenderApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.1.0")]
