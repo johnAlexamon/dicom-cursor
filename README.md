@@ -2,7 +2,8 @@
 
 A simple Windows Forms application that acts as a **DICOM C-STORE sender** built with [.NET 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) and the open-source [fo-dicom](https://github.com/fo-dicom/fo-dicom) library. The app allows users to send `.dcm` files to a PACS or DICOM receiver using configurable AE titles, IP address, and port.
 
-![DICOM Sender Screenshot](./screenshot.png)
+![DICOM Sender Screenshot](./DicomSenderApp/screenshots/DICOM-send-screenshot.png)
+
 
 ---
 
