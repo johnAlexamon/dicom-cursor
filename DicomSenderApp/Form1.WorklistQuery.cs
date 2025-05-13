@@ -364,18 +364,7 @@ public partial class Form1
     
     private string GetDicomValue(DicomDataset dataset, DicomTag tag)
     {
-        if (dataset.Contains(tag))
-        {
-            try
-            {
-                return dataset.GetSingleValue<string>(tag);
-            }
-            catch
-            {
-                return string.Empty;
-            }
-        }
-        return string.Empty;
+        return SafeGetDicomValue(dataset, tag);
     }
     
     private string FormatScheduledDateTime(string date, string time)
@@ -412,29 +401,67 @@ public partial class Form1
         // Log patient name
         if (dataset.Contains(DicomTag.PatientName))
         {
-            sb.AppendLine($"  Patient Name: {dataset.GetSingleValue<string>(DicomTag.PatientName)}");
+            string value = SafeGetDicomValue(dataset, DicomTag.PatientName);
+            sb.AppendLine($"  Patient Name: {value}");
         }
         
         // Log patient ID
-        if (dataset.Contains(DicomTag.PatientID) && !string.IsNullOrEmpty(dataset.GetSingleValue<string>(DicomTag.PatientID)))
+        if (dataset.Contains(DicomTag.PatientID))
         {
-            sb.AppendLine($"  Patient ID: {dataset.GetSingleValue<string>(DicomTag.PatientID)}");
+            string value = SafeGetDicomValue(dataset, DicomTag.PatientID);
+            if (!string.IsNullOrEmpty(value))
+            {
+                sb.AppendLine($"  Patient ID: {value}");
+            }
         }
         
         // Log accession number
-        if (dataset.Contains(DicomTag.AccessionNumber) && !string.IsNullOrEmpty(dataset.GetSingleValue<string>(DicomTag.AccessionNumber)))
+        if (dataset.Contains(DicomTag.AccessionNumber))
         {
-            sb.AppendLine($"  Accession Number: {dataset.GetSingleValue<string>(DicomTag.AccessionNumber)}");
+            string value = SafeGetDicomValue(dataset, DicomTag.AccessionNumber);
+            if (!string.IsNullOrEmpty(value))
+            {
+                sb.AppendLine($"  Accession Number: {value}");
+            }
         }
         
         // Log scheduled date
-        if (dataset.Contains(DicomTag.ScheduledProcedureStepStartDate) && 
-            !string.IsNullOrEmpty(dataset.GetSingleValue<string>(DicomTag.ScheduledProcedureStepStartDate)))
+        if (dataset.Contains(DicomTag.ScheduledProcedureStepStartDate))
         {
-            sb.AppendLine($"  Scheduled Date: {dataset.GetSingleValue<string>(DicomTag.ScheduledProcedureStepStartDate)}");
+            string value = SafeGetDicomValue(dataset, DicomTag.ScheduledProcedureStepStartDate);
+            if (!string.IsNullOrEmpty(value))
+            {
+                sb.AppendLine($"  Scheduled Date: {value}");
+            }
         }
         
         LogMessage(sb.ToString(), isDebug: true);
+    }
+    
+    // Safe method to get DICOM values that handles empty elements
+    private string SafeGetDicomValue(DicomDataset dataset, DicomTag tag)
+    {
+        if (!dataset.Contains(tag))
+            return string.Empty;
+            
+        try
+        {
+            // Check if the element has any values at all
+            var element = dataset.GetDicomItem<DicomElement>(tag);
+            if (element == null || element.Count == 0) 
+                return string.Empty;
+                
+            return dataset.GetSingleValue<string>(tag);
+        }
+        catch (DicomDataException)
+        {
+            // Handle empty elements gracefully
+            return string.Empty;
+        }
+        catch (Exception)
+        {
+            return "<error retrieving value>";
+        }
     }
     
     private void LogDicomDataset(string prefix, DicomDataset dataset)
@@ -469,14 +496,14 @@ public partial class Form1
     {
         if (dataset.Contains(tag))
         {
-            try
+            string value = SafeGetDicomValue(dataset, tag);
+            if (!string.IsNullOrEmpty(value))
             {
-                string value = dataset.GetSingleValue<string>(tag);
                 sb.AppendLine($"  {label}: {value}");
             }
-            catch
+            else
             {
-                sb.AppendLine($"  {label}: <error retrieving value>");
+                sb.AppendLine($"  {label}: <empty>");
             }
         }
     }
