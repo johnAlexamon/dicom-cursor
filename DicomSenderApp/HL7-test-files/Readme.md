@@ -22,6 +22,8 @@ This guide explains how to send HL7 messages using the `hl7snd` tool from the [d
 
 ---
 
-## 🧰 Example on how to send hl7 file
+## 🧰 Example on how to send hl7 file to populate DMWL
 
 .\hl7snd.bat -c localhost:2575 C:\GIT\dicom-cursor\DicomSenderApp\HL7-test-files\DCM4CHEE-populate-MWL-message-M4000.hl7
+
+If you send the above message to your DCM4CHEE arc light 5 server you will see an entry on the DMWL via the GUI at http://localhost:8080/dcm4chee-arc/ui2/en/study/mwl
