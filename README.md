@@ -45,8 +45,8 @@ A simple Windows Forms application that acts as a **DICOM C-STORE sender** and a
 ---
 
 ## 🚀 How to Tag
-1. git tag v1.1.0
-2. git push origin v1.1.0
+1. git tag v1.2.0
+2. git push origin v1.2.0
 
 ---
 
