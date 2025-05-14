@@ -18,6 +18,8 @@
     <PackageReference Include="fo-dicom" Version="5.2.2" />
     <PackageReference Include="HL7-dotnetcore" Version="2.39.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NHapi.Base" Version="3.2.3" />
+    <PackageReference Include="NHapi.Model.V23" Version="3.2.4" />
   </ItemGroup>
 
 </Project>

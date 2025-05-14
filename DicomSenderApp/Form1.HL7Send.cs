@@ -3,8 +3,10 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
-using HL7.Dotnetcore;
 using System.Linq;
+using System.Threading.Tasks;
+using NHapi.Base.Parser;
+using NHapi.Base.Model;
 
 namespace DicomSenderApp;
 
@@ -265,15 +267,52 @@ public partial class Form1
             // Try to parse and validate as HL7
             try
             {
-                var message = new HL7.Dotnetcore.Message(content);
-                string messageType = message.GetValue("MSH.9");
-                string sendingApp = message.GetValue("MSH.3");
-                string receivingApp = message.GetValue("MSH.5");
+                // Use the new NHapi-based helper
+                var message = HL7Helper.LoadAndParseHL7(selectedHL7FilePath);
                 
-                LogMessage($"HL7 message loaded successfully: {messageType} from {sendingApp} to {receivingApp}");
-                LogHL7Debug($"Message control ID: {message.GetValue("MSH.10")}");
-                LogHL7Debug($"Message segments: {message.SegmentCount}");
-                LogHL7Debug($"Message version: {message.GetValue("MSH.12")}");
+                if (message == null)
+                {
+                    LogMessage("Error: Failed to parse HL7 message");
+                    return;
+                }
+                
+                string messageType = message.GetStructureName() ?? "Unknown";
+                LogMessage($"HL7 message loaded successfully: {messageType}");
+                
+                // Get additional message details if needed
+                try
+                {
+                    // Get the MSH segment using safer method
+                    var messageParser = new PipeParser();
+                    string encodedMessage = messageParser.Encode(message);
+                    
+                    // For debugging, show the first segment
+                    string[] segments = encodedMessage.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (segments.Length > 0 && segments[0].StartsWith("MSH|"))
+                    {
+                        string[] fields = segments[0].Split('|');
+                        
+                        // Log the message type from field MSH.9
+                        if (fields.Length > 9)
+                            LogHL7Debug($"Message type: {fields[8]}");
+                        
+                        // Log the sending application from field MSH.3
+                        if (fields.Length > 3)
+                            LogHL7Debug($"Sending application: {fields[2]}");
+                        
+                        // Log the receiving application from field MSH.5
+                        if (fields.Length > 5)
+                            LogHL7Debug($"Receiving application: {fields[4]}");
+                        
+                        // Log the message control ID from field MSH.10
+                        if (fields.Length > 10)
+                            LogHL7Debug($"Message control ID: {fields[9]}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogHL7Debug($"Error extracting detailed info: {ex.Message}");
+                }
             }
             catch (Exception ex)
             {
@@ -308,16 +347,16 @@ public partial class Form1
         
         try
         {
-            string content = File.ReadAllText(selectedHL7FilePath);
-            LogHL7Debug($"File content length: {content.Length} characters");
+            // Use the new NHapi-based helper to parse the message
+            IMessage message = HL7Helper.LoadAndParseHL7(selectedHL7FilePath);
             
-            // Create HL7 message
-            var message = new HL7.Dotnetcore.Message(content);
-            string messageType = message.GetValue("MSH.9");
-            string messageControlId = message.GetValue("MSH.10");
+            // Log message details
+            string messageType = message.GetStructureName() ?? "Unknown";
+            LogHL7Debug($"HL7 message parsed successfully - Type: {messageType}");
             
-            LogHL7Debug($"HL7 message parsed successfully - Type: {messageType}, Control ID: {messageControlId}");
-            LogHL7Debug($"Message contains {message.SegmentCount} segments");
+            // Get encoded message
+            var parser = new PipeParser();
+            string serializedMessage = parser.Encode(message);
             
             // HL7 requires specific characters for message framing:
             // VT (Vertical Tab) at the start: ASCII 11 (0x0B)
@@ -327,7 +366,6 @@ public partial class Form1
             byte[] endBytes = new byte[] { 0x1C, 0x0D }; // FS, CR
             
             // Build the complete message with framing
-            string serializedMessage = message.SerializeMessage(false);
             byte[] messageBytes = Encoding.UTF8.GetBytes(serializedMessage);
             LogHL7Debug($"Serialized message length: {serializedMessage.Length} characters");
             
@@ -414,10 +452,27 @@ public partial class Form1
                         
                         try
                         {
-                            // Parse the ACK message
-                            var ackMessage = new HL7.Dotnetcore.Message(response);
-                            string ackCode = ackMessage.GetValue("MSA.1");
-                            string ackControlId = ackMessage.GetValue("MSA.2");
+                            // Parse the ACK message with NHapi
+                            var ackMessage = parser.Parse(response);
+                            
+                            // Extract ACK code and control ID manually for safety
+                            string ackCode = "Unknown";
+                            string ackControlId = "Unknown";
+                            
+                            // Encode and parse segments manually
+                            string encodedAck = parser.Encode(ackMessage);
+                            string[] segments = encodedAck.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                            
+                            foreach (var segment in segments)
+                            {
+                                if (segment.StartsWith("MSA|"))
+                                {
+                                    string[] fields = segment.Split('|');
+                                    if (fields.Length > 1) ackCode = fields[1];
+                                    if (fields.Length > 2) ackControlId = fields[2];
+                                    break;
+                                }
+                            }
                             
                             LogHL7Debug($"ACK parsed successfully - Code: {ackCode}, Control ID: {ackControlId}");
                             
@@ -427,28 +482,50 @@ public partial class Form1
                             }
                             else if (ackCode == "AE")
                             {
-                                string errorText = ackMessage.GetValue("MSA.3");
+                                string errorText = "Application Error";
+                                
+                                // Try to extract error text from MSA-3
+                                foreach (var segment in segments)
+                                {
+                                    if (segment.StartsWith("MSA|"))
+                                    {
+                                        string[] fields = segment.Split('|');
+                                        if (fields.Length > 3) errorText = fields[3];
+                                        break;
+                                    }
+                                }
+                                
                                 LogMessage($"HL7 message had errors (AE): {errorText} - Control ID: {ackControlId}");
                                 
                                 // Check for error details in ERR segment
-                                try 
+                                foreach (var segment in segments)
                                 {
-                                    // Try to directly access ERR segment data if it exists
-                                    string errorDetails = ackMessage.GetValue("ERR.3");
-                                    if (!string.IsNullOrEmpty(errorDetails))
+                                    if (segment.StartsWith("ERR|"))
                                     {
-                                        LogHL7Debug($"Error details: {errorDetails}");
+                                        string[] fields = segment.Split('|');
+                                        if (fields.Length > 3)
+                                        {
+                                            LogHL7Debug($"Error details: {fields[3]}");
+                                        }
+                                        break;
                                     }
-                                }
-                                catch 
-                                {
-                                    // No ERR segment or can't access it
-                                    LogHL7Debug("No detailed error information available");
                                 }
                             }
                             else if (ackCode == "AR")
                             {
-                                string rejectText = ackMessage.GetValue("MSA.3");
+                                string rejectText = "Message Rejected";
+                                
+                                // Try to extract reject text from MSA-3
+                                foreach (var segment in segments)
+                                {
+                                    if (segment.StartsWith("MSA|"))
+                                    {
+                                        string[] fields = segment.Split('|');
+                                        if (fields.Length > 3) rejectText = fields[3];
+                                        break;
+                                    }
+                                }
+                                
                                 LogMessage($"HL7 message rejected (AR): {rejectText} - Control ID: {ackControlId}");
                             }
                             else

@@ -6,8 +6,11 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v9.0": {
-      "DicomSenderApp/1.0.0": {
+      "DicomSenderApp/1.1.0": {
         "dependencies": {
+          "HL7-dotnetcore": "2.39.1",
+          "nhapi.base": "3.2.3",
+          "nhapi.model.v23": "3.2.4",
           "Newtonsoft.Json": "13.0.3",
           "fo-dicom": "5.2.2"
         },
@@ -41,6 +44,14 @@
           "lib/netstandard2.0/fo-dicom.core.dll": {
             "assemblyVersion": "5.2.2.0",
             "fileVersion": "5.2.2.0"
+          }
+        }
+      },
+      "HL7-dotnetcore/2.39.1": {
+        "runtime": {
+          "lib/net8.0/HL7-dotnetcore.dll": {
+            "assemblyVersion": "2.39.1.0",
+            "fileVersion": "2.39.1.0"
           }
         }
       },
@@ -134,13 +145,43 @@
           }
         }
       },
+      "nhapi.base/3.2.3": {
+        "dependencies": {
+          "System.Configuration.ConfigurationManager": "8.0.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NHapi.Base.dll": {
+            "assemblyVersion": "3.2.3.0",
+            "fileVersion": "3.2.3.0"
+          }
+        }
+      },
+      "nhapi.model.v23/3.2.4": {
+        "dependencies": {
+          "nhapi.base": "3.2.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NHapi.Model.V23.dll": {
+            "assemblyVersion": "3.2.4.0",
+            "fileVersion": "3.2.4.0"
+          }
+        }
+      },
       "System.Buffers/4.5.1": {},
+      "System.Configuration.ConfigurationManager/8.0.1": {
+        "dependencies": {
+          "System.Diagnostics.EventLog": "8.0.1",
+          "System.Security.Cryptography.ProtectedData": "8.0.0"
+        }
+      },
       "System.Diagnostics.DiagnosticSource/6.0.0": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "System.Diagnostics.EventLog/8.0.1": {},
       "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
+      "System.Security.Cryptography.ProtectedData/8.0.0": {},
       "System.Text.Encoding.CodePages/6.0.1": {},
       "System.Text.Encodings.Web/8.0.0": {},
       "System.Text.Json/8.0.5": {},
@@ -148,7 +189,7 @@
     }
   },
   "libraries": {
-    "DicomSenderApp/1.0.0": {
+    "DicomSenderApp/1.1.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -166,6 +207,13 @@
       "sha512": "sha512-vZR0j7Js8CjAm2GQWH4x+nb/eA9Rq1t8/Gsv6lfTFXfZ4ryJ5tFTyQbAp8EHJf1UZBQib8bsAUQRbBR346sHkw==",
       "path": "fo-dicom/5.2.2",
       "hashPath": "fo-dicom.5.2.2.nupkg.sha512"
+    },
+    "HL7-dotnetcore/2.39.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xbgykLlAr644SfYY2oxnpYYto+JFYLuUHt00hRTlhpB+5DiFC2oVSVRA+8yyq/lmkjTNidtTbN9nyK0ft4DSfw==",
+      "path": "hl7-dotnetcore/2.39.1",
+      "hashPath": "hl7-dotnetcore.2.39.1.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
       "type": "package",
@@ -230,12 +278,33 @@
       "path": "newtonsoft.json/13.0.3",
       "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
     },
+    "nhapi.base/3.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MYbx5AoEA1kdB+C180K5X2RTCpY9tHl+GY24BZLXunvFIbXfP0ol1U461DMvW1Ygm+4Huj6gCm4cccHWNrtWMw==",
+      "path": "nhapi.base/3.2.3",
+      "hashPath": "nhapi.base.3.2.3.nupkg.sha512"
+    },
+    "nhapi.model.v23/3.2.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KLOy3umCe7IE5v0KYh4/mlBSmIP2eS6Wgl5uvlqQoS9nOLHqVkkzw93wtMcDAMQ9gUFRK8ZKw8NC25c6CiR7eQ==",
+      "path": "nhapi.model.v23/3.2.4",
+      "hashPath": "nhapi.model.v23.3.2.4.nupkg.sha512"
+    },
     "System.Buffers/4.5.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-Rw7ijyl1qqRS0YQD/WycNst8hUUMgrMH4FCn1nNm27M4VxchZ1js3fVjQaANHO5f3sN4isvP4a+Met9Y4YomAg==",
       "path": "system.buffers/4.5.1",
       "hashPath": "system.buffers.4.5.1.nupkg.sha512"
+    },
+    "System.Configuration.ConfigurationManager/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gPYFPDyohW2gXNhdQRSjtmeS6FymL2crg4Sral1wtvEJ7DUqFCDWDVbbLobASbzxfic8U1hQEdC7hmg9LHncMw==",
+      "path": "system.configuration.configurationmanager/8.0.1",
+      "hashPath": "system.configuration.configurationmanager.8.0.1.nupkg.sha512"
     },
     "System.Diagnostics.DiagnosticSource/6.0.0": {
       "type": "package",
@@ -244,12 +313,26 @@
       "path": "system.diagnostics.diagnosticsource/6.0.0",
       "hashPath": "system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512"
     },
+    "System.Diagnostics.EventLog/8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-n1ZP7NM2Gkn/MgD8+eOT5MulMj6wfeQMNS2Pizvq5GHCZfjlFMXV2irQlQmJhwA2VABC57M0auudO89Iu2uRLg==",
+      "path": "system.diagnostics.eventlog/8.0.1",
+      "hashPath": "system.diagnostics.eventlog.8.0.1.nupkg.sha512"
+    },
     "System.Runtime.CompilerServices.Unsafe/6.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
       "path": "system.runtime.compilerservices.unsafe/6.0.0",
       "hashPath": "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+    },
+    "System.Security.Cryptography.ProtectedData/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+TUFINV2q2ifyXauQXRwy4CiBhqvDEDZeVJU7qfxya4aRYOKzVBpN+4acx25VcPB9ywUN6C0n8drWl110PhZEg==",
+      "path": "system.security.cryptography.protecteddata/8.0.0",
+      "hashPath": "system.security.cryptography.protecteddata.8.0.0.nupkg.sha512"
     },
     "System.Text.Encoding.CodePages/6.0.1": {
       "type": "package",
