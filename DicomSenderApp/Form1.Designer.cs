@@ -45,7 +45,6 @@ partial class Form1
         this.label5 = new System.Windows.Forms.Label();
         this.groupBox1 = new System.Windows.Forms.GroupBox();
         this.groupBox2 = new System.Windows.Forms.GroupBox();
-        this.groupBox3 = new System.Windows.Forms.GroupBox();
         this.groupBoxTags = new System.Windows.Forms.GroupBox();
         this.chkModifyTags = new System.Windows.Forms.CheckBox();
         this.label6 = new System.Windows.Forms.Label();
@@ -84,10 +83,16 @@ partial class Form1
         this.txtCFindAccessionNumber = new System.Windows.Forms.TextBox();
         this.btnQueryCFind = new System.Windows.Forms.Button();
         this.dataGridCFind = new System.Windows.Forms.DataGridView();
+        this.btnGenerateStudyUID = new System.Windows.Forms.Button();
+        this.btnGenerateSeriesUID = new System.Windows.Forms.Button();
+        this.btnGenerateSOPUID = new System.Windows.Forms.Button();
+        this.btnToggleLog = new System.Windows.Forms.Button();
+        this.splitterLog = new System.Windows.Forms.Splitter();
+        this.btnSaveDicomTags = new System.Windows.Forms.Button();
+        this.tabPageLog = new System.Windows.Forms.TabPage();
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).BeginInit();
         this.groupBox1.SuspendLayout();
         this.groupBox2.SuspendLayout();
-        this.groupBox3.SuspendLayout();
         this.groupBoxTags.SuspendLayout();
         this.tabControl.SuspendLayout();
         this.tabPageSend.SuspendLayout();
@@ -96,6 +101,7 @@ partial class Form1
         ((System.ComponentModel.ISupportInitialize)(this.dataGridWorklist)).BeginInit();
         this.tabPageCFind.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)(this.dataGridCFind)).BeginInit();
+        this.tabPageLog.SuspendLayout();
         this.SuspendLayout();
         // 
         // label1
@@ -219,14 +225,15 @@ partial class Form1
         // 
         // txtLog
         // 
+        this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.txtLog.Location = new System.Drawing.Point(3, 3);
+        this.txtLog.Size = new System.Drawing.Size(786, 561);
         this.txtLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
         this.txtLog.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-        this.txtLog.Location = new System.Drawing.Point(6, 26);
         this.txtLog.Multiline = true;
         this.txtLog.Name = "txtLog";
         this.txtLog.ReadOnly = true;
         this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-        this.txtLog.Size = new System.Drawing.Size(768, 242);
         this.txtLog.TabIndex = 13;
         // 
         // label5
@@ -269,39 +276,34 @@ partial class Form1
         this.groupBox2.TabStop = false;
         this.groupBox2.Text = "Operations";
         // 
-        // groupBox3
-        // 
-        this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-        this.groupBox3.Controls.Add(this.txtLog);
-        this.groupBox3.Location = new System.Drawing.Point(12, 445);
-        this.groupBox3.Name = "groupBox3";
-        this.groupBox3.Size = new System.Drawing.Size(780, 274);
-        this.groupBox3.TabIndex = 17;
-        this.groupBox3.TabStop = false;
-        this.groupBox3.Text = "Log";
-        // 
         // groupBoxTags
         // 
-        this.groupBoxTags.Controls.Add(this.txtConfidentialityCode);
-        this.groupBoxTags.Controls.Add(this.label11);
-        this.groupBoxTags.Controls.Add(this.btnGenerateUIDs);
-        this.groupBoxTags.Controls.Add(this.txtSOPInstanceUID);
-        this.groupBoxTags.Controls.Add(this.label10);
-        this.groupBoxTags.Controls.Add(this.txtSeriesUID);
-        this.groupBoxTags.Controls.Add(this.label9);
-        this.groupBoxTags.Controls.Add(this.txtStudyUID);
-        this.groupBoxTags.Controls.Add(this.label8);
-        this.groupBoxTags.Controls.Add(this.txtPatientID);
-        this.groupBoxTags.Controls.Add(this.label7);
-        this.groupBoxTags.Controls.Add(this.txtPatientName);
-        this.groupBoxTags.Controls.Add(this.label6);
+        this.groupBoxTags.Controls.Clear();
         this.groupBoxTags.Controls.Add(this.chkModifyTags);
+        this.groupBoxTags.Controls.Add(this.btnGenerateUIDs);
+        this.groupBoxTags.Controls.Add(this.btnSaveDicomTags);
+        this.groupBoxTags.Controls.Add(this.label6);
+        this.groupBoxTags.Controls.Add(this.txtPatientName);
+        this.groupBoxTags.Controls.Add(this.label7);
+        this.groupBoxTags.Controls.Add(this.txtPatientID);
+        this.groupBoxTags.Controls.Add(this.label8);
+        this.groupBoxTags.Controls.Add(this.txtStudyUID);
+        this.groupBoxTags.Controls.Add(this.btnGenerateStudyUID);
+        this.groupBoxTags.Controls.Add(this.label9);
+        this.groupBoxTags.Controls.Add(this.txtSeriesUID);
+        this.groupBoxTags.Controls.Add(this.btnGenerateSeriesUID);
+        this.groupBoxTags.Controls.Add(this.label10);
+        this.groupBoxTags.Controls.Add(this.txtSOPInstanceUID);
+        this.groupBoxTags.Controls.Add(this.btnGenerateSOPUID);
+        this.groupBoxTags.Controls.Add(this.label11);
+        this.groupBoxTags.Controls.Add(this.txtConfidentialityCode);
         this.groupBoxTags.Location = new System.Drawing.Point(12, 289);
         this.groupBoxTags.Name = "groupBoxTags";
-        this.groupBoxTags.Size = new System.Drawing.Size(780, 180);
+        this.groupBoxTags.Size = new System.Drawing.Size(760, 334);
         this.groupBoxTags.TabIndex = 18;
         this.groupBoxTags.TabStop = false;
         this.groupBoxTags.Text = "Modify DICOM Tags";
+        this.groupBoxTags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
         // 
         // chkModifyTags
         // 
@@ -362,13 +364,13 @@ partial class Form1
         this.txtStudyUID.Enabled = false;
         this.txtStudyUID.Location = new System.Drawing.Point(142, 123);
         this.txtStudyUID.Name = "txtStudyUID";
-        this.txtStudyUID.Size = new System.Drawing.Size(628, 27);
+        this.txtStudyUID.Size = new System.Drawing.Size(428, 27);
         this.txtStudyUID.TabIndex = 6;
         // 
         // label9
         // 
         this.label9.AutoSize = true;
-        this.label9.Location = new System.Drawing.Point(350, 60);
+        this.label9.Location = new System.Drawing.Point(16, 159);
         this.label9.Name = "label9";
         this.label9.Size = new System.Drawing.Size(81, 20);
         this.label9.TabIndex = 7;
@@ -377,15 +379,15 @@ partial class Form1
         // txtSeriesUID
         // 
         this.txtSeriesUID.Enabled = false;
-        this.txtSeriesUID.Location = new System.Drawing.Point(437, 57);
+        this.txtSeriesUID.Location = new System.Drawing.Point(142, 156);
         this.txtSeriesUID.Name = "txtSeriesUID";
-        this.txtSeriesUID.Size = new System.Drawing.Size(333, 27);
+        this.txtSeriesUID.Size = new System.Drawing.Size(428, 27);
         this.txtSeriesUID.TabIndex = 8;
         // 
         // label10
         // 
         this.label10.AutoSize = true;
-        this.label10.Location = new System.Drawing.Point(350, 93);
+        this.label10.Location = new System.Drawing.Point(16, 192);
         this.label10.Name = "label10";
         this.label10.Size = new System.Drawing.Size(128, 20);
         this.label10.TabIndex = 9;
@@ -394,9 +396,9 @@ partial class Form1
         // txtSOPInstanceUID
         // 
         this.txtSOPInstanceUID.Enabled = false;
-        this.txtSOPInstanceUID.Location = new System.Drawing.Point(484, 90);
+        this.txtSOPInstanceUID.Location = new System.Drawing.Point(142, 189);
         this.txtSOPInstanceUID.Name = "txtSOPInstanceUID";
-        this.txtSOPInstanceUID.Size = new System.Drawing.Size(286, 27);
+        this.txtSOPInstanceUID.Size = new System.Drawing.Size(428, 27);
         this.txtSOPInstanceUID.TabIndex = 10;
         // 
         // btnGenerateUIDs
@@ -413,7 +415,7 @@ partial class Form1
         // label11
         // 
         this.label11.AutoSize = true;
-        this.label11.Location = new System.Drawing.Point(350, 126);
+        this.label11.Location = new System.Drawing.Point(350, 60);
         this.label11.Name = "label11";
         this.label11.Size = new System.Drawing.Size(141, 20);
         this.label11.TabIndex = 12;
@@ -422,7 +424,7 @@ partial class Form1
         // txtConfidentialityCode
         // 
         this.txtConfidentialityCode.Enabled = false;
-        this.txtConfidentialityCode.Location = new System.Drawing.Point(497, 123);
+        this.txtConfidentialityCode.Location = new System.Drawing.Point(497, 57);
         this.txtConfidentialityCode.Name = "txtConfidentialityCode";
         this.txtConfidentialityCode.Size = new System.Drawing.Size(273, 27);
         this.txtConfidentialityCode.TabIndex = 13;
@@ -444,6 +446,7 @@ partial class Form1
         this.tabControl.Controls.Add(this.tabPageSend);
         this.tabControl.Controls.Add(this.tabPageWorklist);
         this.tabControl.Controls.Add(this.tabPageCFind);
+        this.tabControl.Controls.Add(this.tabPageLog);
         this.tabControl.Location = new System.Drawing.Point(12, 47);
         this.tabControl.Name = "tabControl";
         this.tabControl.SelectedIndex = 0;
@@ -453,7 +456,6 @@ partial class Form1
         // tabPageSend
         // 
         this.tabPageSend.Controls.Add(this.groupBoxTags);
-        this.tabPageSend.Controls.Add(this.groupBox3);
         this.tabPageSend.Controls.Add(this.groupBox2);
         this.tabPageSend.Controls.Add(this.groupBox1);
         this.tabPageSend.Location = new System.Drawing.Point(4, 29);
@@ -666,11 +668,82 @@ partial class Form1
         this.dataGridCFind.Size = new System.Drawing.Size(760, 400);
         this.dataGridCFind.TabIndex = 5;
         // 
+        // btnGenerateStudyUID
+        // 
+        this.btnGenerateStudyUID.Enabled = false;
+        this.btnGenerateStudyUID.Location = new System.Drawing.Point(576, 123);
+        this.btnGenerateStudyUID.Name = "btnGenerateStudyUID";
+        this.btnGenerateStudyUID.Size = new System.Drawing.Size(93, 27);
+        this.btnGenerateStudyUID.TabIndex = 14;
+        this.btnGenerateStudyUID.Text = "Generate";
+        this.btnGenerateStudyUID.UseVisualStyleBackColor = true;
+        this.btnGenerateStudyUID.Click += new System.EventHandler(this.btnGenerateStudyUID_Click);
+        // 
+        // btnGenerateSeriesUID
+        // 
+        this.btnGenerateSeriesUID.Enabled = false;
+        this.btnGenerateSeriesUID.Location = new System.Drawing.Point(576, 156);
+        this.btnGenerateSeriesUID.Name = "btnGenerateSeriesUID";
+        this.btnGenerateSeriesUID.Size = new System.Drawing.Size(93, 27);
+        this.btnGenerateSeriesUID.TabIndex = 15;
+        this.btnGenerateSeriesUID.Text = "Generate";
+        this.btnGenerateSeriesUID.UseVisualStyleBackColor = true;
+        this.btnGenerateSeriesUID.Click += new System.EventHandler(this.btnGenerateSeriesUID_Click);
+        // 
+        // btnGenerateSOPUID
+        // 
+        this.btnGenerateSOPUID.Enabled = false;
+        this.btnGenerateSOPUID.Location = new System.Drawing.Point(576, 189);
+        this.btnGenerateSOPUID.Name = "btnGenerateSOPUID";
+        this.btnGenerateSOPUID.Size = new System.Drawing.Size(93, 27);
+        this.btnGenerateSOPUID.TabIndex = 16;
+        this.btnGenerateSOPUID.Text = "Generate";
+        this.btnGenerateSOPUID.UseVisualStyleBackColor = true;
+        this.btnGenerateSOPUID.Click += new System.EventHandler(this.btnGenerateSOPUID_Click);
+        // 
+        // btnToggleLog
+        // 
+        this.btnToggleLog.Location = new System.Drawing.Point(734, 6);
+        this.btnToggleLog.Size = new System.Drawing.Size(55, 26);
+        this.btnToggleLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        this.btnToggleLog.Text = "Clear";
+        this.btnToggleLog.UseVisualStyleBackColor = true;
+        this.btnToggleLog.Click += new System.EventHandler(this.btnToggleLog_Click);
+        // 
+        // splitterLog
+        // 
+        this.splitterLog = new System.Windows.Forms.Splitter();
+        this.splitterLog.Dock = System.Windows.Forms.DockStyle.Top;
+        this.splitterLog.Location = new System.Drawing.Point(3, 23);
+        this.splitterLog.Name = "splitterLog";
+        this.splitterLog.Size = new System.Drawing.Size(774, 5);
+        this.splitterLog.TabIndex = 15;
+        this.splitterLog.TabStop = false;
+        // 
+        // btnSaveDicomTags
+        // 
+        this.btnSaveDicomTags.Location = new System.Drawing.Point(348, 26);
+        this.btnSaveDicomTags.Text = "Save Tags";
+        this.btnSaveDicomTags.Visible = true;
+        this.btnSaveDicomTags.Click += new System.EventHandler(this.btnSaveDicomTags_Click);
+        // 
+        // tabPageLog
+        // 
+        this.tabPageLog.Location = new System.Drawing.Point(4, 29);
+        this.tabPageLog.Name = "tabPageLog";
+        this.tabPageLog.Padding = new System.Windows.Forms.Padding(3);
+        this.tabPageLog.Size = new System.Drawing.Size(792, 567);
+        this.tabPageLog.TabIndex = 4;
+        this.tabPageLog.Text = "Log";
+        this.tabPageLog.UseVisualStyleBackColor = true;
+        this.tabPageLog.Controls.Add(this.txtLog);
+        this.tabPageLog.Controls.Add(this.btnToggleLog);
+        // 
         // Form1
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(804, 725);
+        this.ClientSize = new System.Drawing.Size(804, 800);
         this.Controls.Add(this.tabControl);
         this.Controls.Add(this.btnAbout);
         this.MinimumSize = new System.Drawing.Size(820, 750);
@@ -681,8 +754,6 @@ partial class Form1
         this.groupBox1.PerformLayout();
         this.groupBox2.ResumeLayout(false);
         this.groupBox2.PerformLayout();
-        this.groupBox3.ResumeLayout(false);
-        this.groupBox3.PerformLayout();
         this.groupBoxTags.ResumeLayout(false);
         this.groupBoxTags.PerformLayout();
         this.tabControl.ResumeLayout(false);
@@ -693,6 +764,7 @@ partial class Form1
         ((System.ComponentModel.ISupportInitialize)(this.dataGridWorklist)).EndInit();
         this.tabPageCFind.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)(this.dataGridCFind)).EndInit();
+        this.tabPageLog.ResumeLayout(false);
         this.ResumeLayout(false);
     }
 
@@ -715,7 +787,6 @@ partial class Form1
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.GroupBox groupBox1;
     private System.Windows.Forms.GroupBox groupBox2;
-    private System.Windows.Forms.GroupBox groupBox3;
     private System.Windows.Forms.GroupBox groupBoxTags;
     private System.Windows.Forms.CheckBox chkModifyTags;
     private System.Windows.Forms.Label label6;
@@ -754,4 +825,11 @@ partial class Form1
     private System.Windows.Forms.TextBox txtCFindAccessionNumber;
     private System.Windows.Forms.Button btnQueryCFind;
     private System.Windows.Forms.DataGridView dataGridCFind;
+    private System.Windows.Forms.Button btnGenerateStudyUID;
+    private System.Windows.Forms.Button btnGenerateSeriesUID;
+    private System.Windows.Forms.Button btnGenerateSOPUID;
+    private System.Windows.Forms.Button btnToggleLog;
+    private System.Windows.Forms.Splitter splitterLog;
+    private System.Windows.Forms.Button btnSaveDicomTags;
+    private System.Windows.Forms.TabPage tabPageLog;
 }

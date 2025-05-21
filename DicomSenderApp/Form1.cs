@@ -67,6 +67,14 @@ public partial class Form1 : Form
                     txtCFindTargetIP.Text = config.CFindTargetIP;
                     numCFindTargetPort.Value = config.CFindTargetPort;
                     
+                    // DICOM tag values
+                    txtPatientName.Text = config.PatientName;
+                    txtPatientID.Text = config.PatientID;
+                    txtStudyUID.Text = config.StudyUID;
+                    txtSeriesUID.Text = config.SeriesUID;
+                    txtSOPInstanceUID.Text = config.SOPInstanceUID;
+                    txtConfidentialityCode.Text = config.ConfidentialityCode;
+                    
                     // HL7 tab configuration
                     txtHL7TargetIP.Text = config.HL7TargetIP;
                     numHL7TargetPort.Value = config.HL7TargetPort;
@@ -201,4 +209,12 @@ public class DicomConfig
     // HL7 specific configuration
     public string HL7TargetIP { get; set; } = "127.0.0.1";
     public int HL7TargetPort { get; set; } = 2100;
+    
+    // DICOM Tag values
+    public string PatientName { get; set; } = "";
+    public string PatientID { get; set; } = "";
+    public string StudyUID { get; set; } = "";
+    public string SeriesUID { get; set; } = "";
+    public string SOPInstanceUID { get; set; } = "";
+    public string ConfidentialityCode { get; set; } = "";
 }

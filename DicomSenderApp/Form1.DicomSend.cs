@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using FellowOakDicom;
 using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
+using Newtonsoft.Json;
 
 namespace DicomSenderApp;
 
@@ -214,24 +215,118 @@ public partial class Form1
     
     private void chkModifyTags_CheckedChanged(object sender, EventArgs e)
     {
-        bool enableControls = chkModifyTags.Checked;
+        bool enabled = chkModifyTags.Checked;
         
-        txtPatientName.Enabled = enableControls;
-        txtPatientID.Enabled = enableControls;
-        txtStudyUID.Enabled = enableControls;
-        txtSeriesUID.Enabled = enableControls;
-        txtSOPInstanceUID.Enabled = enableControls;
-        txtConfidentialityCode.Enabled = enableControls;
-        btnGenerateUIDs.Enabled = enableControls;
+        // Enable/disable tag fields
+        txtPatientName.Enabled = enabled;
+        txtPatientID.Enabled = enabled;
+        txtStudyUID.Enabled = enabled;
+        txtSeriesUID.Enabled = enabled;
+        txtSOPInstanceUID.Enabled = enabled;
+        txtConfidentialityCode.Enabled = enabled;
+        
+        // Enable/disable generate buttons
+        btnGenerateUIDs.Enabled = enabled;
+        btnGenerateStudyUID.Enabled = enabled;
+        btnGenerateSeriesUID.Enabled = enabled;
+        btnGenerateSOPUID.Enabled = enabled;
+        
+        // Enable/disable save tags button
+        btnSaveDicomTags.Enabled = enabled;
     }
     
     private void btnGenerateUIDs_Click(object sender, EventArgs e)
     {
-        // Generate new UIDs
-        txtStudyUID.Text = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
-        txtSeriesUID.Text = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
-        txtSOPInstanceUID.Text = DicomUIDGenerator.GenerateDerivedFromUUID().UID;
-        
-        LogMessage("New UIDs generated");
+        // Generate all UIDs
+        GenerateStudyUID();
+        GenerateSeriesUID();
+        GenerateSOPInstanceUID();
+    }
+    
+    private void btnGenerateStudyUID_Click(object sender, EventArgs e)
+    {
+        // Generate only Study UID
+        GenerateStudyUID();
+    }
+    
+    private void btnGenerateSeriesUID_Click(object sender, EventArgs e)
+    {
+        // Generate only Series UID
+        GenerateSeriesUID();
+    }
+    
+    private void btnGenerateSOPUID_Click(object sender, EventArgs e)
+    {
+        // Generate only SOP Instance UID
+        GenerateSOPInstanceUID();
+    }
+    
+    private void GenerateStudyUID()
+    {
+        txtStudyUID.Text = DicomUID.Generate().UID;
+        LogMessage("Generated new Study UID");
+    }
+    
+    private void GenerateSeriesUID()
+    {
+        txtSeriesUID.Text = DicomUID.Generate().UID;
+        LogMessage("Generated new Series UID");
+    }
+    
+    private void GenerateSOPInstanceUID()
+    {
+        txtSOPInstanceUID.Text = DicomUID.Generate().UID;
+        LogMessage("Generated new SOP Instance UID");
+    }
+
+    // Clear log
+    private void btnToggleLog_Click(object sender, EventArgs e)
+    {
+        // Clear the log text box
+        txtLog.Clear();
+        LogMessage("Log cleared");
+    }
+    
+    // Save DICOM tag values to configuration
+    private void btnSaveDicomTags_Click(object sender, EventArgs e)
+    {
+        SaveDicomTagsToConfig();
+        LogMessage("DICOM tag values saved to configuration");
+    }
+    
+    private void SaveDicomTagsToConfig()
+    {
+        try
+        {
+            // Read existing config
+            DicomConfig config;
+            if (File.Exists(configFilePath))
+            {
+                config = JsonConvert.DeserializeObject<DicomConfig>(File.ReadAllText(configFilePath));
+                if (config == null)
+                {
+                    config = new DicomConfig();
+                }
+            }
+            else
+            {
+                config = new DicomConfig();
+            }
+            
+            // Update DICOM tag values
+            config.PatientName = txtPatientName.Text;
+            config.PatientID = txtPatientID.Text;
+            config.StudyUID = txtStudyUID.Text;
+            config.SeriesUID = txtSeriesUID.Text;
+            config.SOPInstanceUID = txtSOPInstanceUID.Text;
+            config.ConfidentialityCode = txtConfidentialityCode.Text;
+            
+            // Save the updated config
+            File.WriteAllText(configFilePath, JsonConvert.SerializeObject(config, Formatting.Indented));
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"Error saving DICOM tag values: {ex.Message}");
+        }
     }
 } 
