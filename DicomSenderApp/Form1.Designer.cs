@@ -78,6 +78,12 @@ partial class Form1
         this.btnQueryWorklist = new System.Windows.Forms.Button();
         this.dataGridWorklist = new System.Windows.Forms.DataGridView();
         this.chkDebugLogging = new System.Windows.Forms.CheckBox();
+        this.tabPageCFind = new System.Windows.Forms.TabPage();
+        this.txtCFindPatientName = new System.Windows.Forms.TextBox();
+        this.txtCFindPatientID = new System.Windows.Forms.TextBox();
+        this.txtCFindAccessionNumber = new System.Windows.Forms.TextBox();
+        this.btnQueryCFind = new System.Windows.Forms.Button();
+        this.dataGridCFind = new System.Windows.Forms.DataGridView();
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).BeginInit();
         this.groupBox1.SuspendLayout();
         this.groupBox2.SuspendLayout();
@@ -88,6 +94,8 @@ partial class Form1
         this.tabPageWorklist.SuspendLayout();
         this.groupBoxWorklistQuery.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)(this.dataGridWorklist)).BeginInit();
+        this.tabPageCFind.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.dataGridCFind)).BeginInit();
         this.SuspendLayout();
         // 
         // label1
@@ -435,6 +443,7 @@ partial class Form1
         this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
         this.tabControl.Controls.Add(this.tabPageSend);
         this.tabControl.Controls.Add(this.tabPageWorklist);
+        this.tabControl.Controls.Add(this.tabPageCFind);
         this.tabControl.Location = new System.Drawing.Point(12, 47);
         this.tabControl.Name = "tabControl";
         this.tabControl.SelectedIndex = 0;
@@ -457,12 +466,12 @@ partial class Form1
         // 
         // tabPageWorklist
         // 
-        this.tabPageWorklist.Controls.Add(this.dataGridWorklist);
         this.tabPageWorklist.Controls.Add(this.groupBoxWorklistQuery);
+        this.tabPageWorklist.Controls.Add(this.dataGridWorklist);
         this.tabPageWorklist.Location = new System.Drawing.Point(4, 29);
         this.tabPageWorklist.Name = "tabPageWorklist";
         this.tabPageWorklist.Padding = new System.Windows.Forms.Padding(3);
-        this.tabPageWorklist.Size = new System.Drawing.Size(772, 633);
+        this.tabPageWorklist.Size = new System.Drawing.Size(792, 567);
         this.tabPageWorklist.TabIndex = 1;
         this.tabPageWorklist.Text = "Modality Worklist";
         this.tabPageWorklist.UseVisualStyleBackColor = true;
@@ -601,6 +610,62 @@ partial class Form1
         this.chkDebugLogging.UseVisualStyleBackColor = true;
         this.chkDebugLogging.CheckedChanged += new System.EventHandler(this.chkDebugLogging_CheckedChanged);
         // 
+        // tabPageCFind
+        // 
+        this.tabPageCFind.Location = new System.Drawing.Point(4, 29);
+        this.tabPageCFind.Name = "tabPageCFind";
+        this.tabPageCFind.Padding = new System.Windows.Forms.Padding(3);
+        this.tabPageCFind.Size = new System.Drawing.Size(792, 567);
+        this.tabPageCFind.TabIndex = 2;
+        this.tabPageCFind.Text = "DICOM C-FIND";
+        this.tabPageCFind.UseVisualStyleBackColor = true;
+        // 
+        // txtCFindPatientName
+        // 
+        this.txtCFindPatientName.Location = new System.Drawing.Point(142, 27);
+        this.txtCFindPatientName.Name = "txtCFindPatientName";
+        this.txtCFindPatientName.Size = new System.Drawing.Size(200, 27);
+        this.txtCFindPatientName.TabIndex = 1;
+        // 
+        // txtCFindPatientID
+        // 
+        this.txtCFindPatientID.Location = new System.Drawing.Point(142, 60);
+        this.txtCFindPatientID.Name = "txtCFindPatientID";
+        this.txtCFindPatientID.Size = new System.Drawing.Size(200, 27);
+        this.txtCFindPatientID.TabIndex = 2;
+        // 
+        // txtCFindAccessionNumber
+        // 
+        this.txtCFindAccessionNumber.Location = new System.Drawing.Point(142, 93);
+        this.txtCFindAccessionNumber.Name = "txtCFindAccessionNumber";
+        this.txtCFindAccessionNumber.Size = new System.Drawing.Size(200, 27);
+        this.txtCFindAccessionNumber.TabIndex = 3;
+        // 
+        // btnQueryCFind
+        // 
+        this.btnQueryCFind.Location = new System.Drawing.Point(142, 126);
+        this.btnQueryCFind.Name = "btnQueryCFind";
+        this.btnQueryCFind.Size = new System.Drawing.Size(200, 29);
+        this.btnQueryCFind.TabIndex = 4;
+        this.btnQueryCFind.Text = "Query C-FIND";
+        this.btnQueryCFind.UseVisualStyleBackColor = true;
+        this.btnQueryCFind.Click += new System.EventHandler(this.btnQueryCFind_Click);
+        // 
+        // dataGridCFind
+        // 
+        this.dataGridCFind.AllowUserToAddRows = false;
+        this.dataGridCFind.AllowUserToDeleteRows = false;
+        this.dataGridCFind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+        this.dataGridCFind.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+        this.dataGridCFind.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        this.dataGridCFind.Location = new System.Drawing.Point(6, 161);
+        this.dataGridCFind.Name = "dataGridCFind";
+        this.dataGridCFind.ReadOnly = true;
+        this.dataGridCFind.RowHeadersWidth = 51;
+        this.dataGridCFind.RowTemplate.Height = 29;
+        this.dataGridCFind.Size = new System.Drawing.Size(760, 400);
+        this.dataGridCFind.TabIndex = 5;
+        // 
         // Form1
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -626,6 +691,8 @@ partial class Form1
         this.groupBoxWorklistQuery.ResumeLayout(false);
         this.groupBoxWorklistQuery.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)(this.dataGridWorklist)).EndInit();
+        this.tabPageCFind.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)(this.dataGridCFind)).EndInit();
         this.ResumeLayout(false);
     }
 
@@ -681,4 +748,10 @@ partial class Form1
     private System.Windows.Forms.Label label12;
     private System.Windows.Forms.DataGridView dataGridWorklist;
     private System.Windows.Forms.CheckBox chkDebugLogging;
+    private System.Windows.Forms.TabPage tabPageCFind;
+    private System.Windows.Forms.TextBox txtCFindPatientName;
+    private System.Windows.Forms.TextBox txtCFindPatientID;
+    private System.Windows.Forms.TextBox txtCFindAccessionNumber;
+    private System.Windows.Forms.Button btnQueryCFind;
+    private System.Windows.Forms.DataGridView dataGridCFind;
 }

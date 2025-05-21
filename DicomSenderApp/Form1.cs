@@ -33,8 +33,10 @@ public partial class Form1 : Form
         
         InitializeWorklistConfigControls();
         InitializeHL7Tab();
+        InitializeCFindConfigControls();
         LoadConfig();
         InitializeWorklistDataGrid();
+        InitializeCFindDataGrid();
         LogMessage("Application started", false);
     }
 
@@ -58,6 +60,12 @@ public partial class Form1 : Form
                     txtWorklistTargetAE.Text = config.WorklistTargetAE;
                     txtWorklistTargetIP.Text = config.WorklistTargetIP;
                     numWorklistTargetPort.Value = config.WorklistTargetPort;
+                    
+                    // C-FIND tab configuration
+                    txtCFindSourceAE.Text = config.CFindSourceAE;
+                    txtCFindTargetAE.Text = config.CFindTargetAE;
+                    txtCFindTargetIP.Text = config.CFindTargetIP;
+                    numCFindTargetPort.Value = config.CFindTargetPort;
                     
                     // HL7 tab configuration
                     txtHL7TargetIP.Text = config.HL7TargetIP;
@@ -90,6 +98,12 @@ public partial class Form1 : Form
                 WorklistTargetAE = txtWorklistTargetAE.Text,
                 WorklistTargetIP = txtWorklistTargetIP.Text,
                 WorklistTargetPort = (int)numWorklistTargetPort.Value,
+                
+                // C-FIND tab configuration
+                CFindSourceAE = txtCFindSourceAE.Text,
+                CFindTargetAE = txtCFindTargetAE.Text,
+                CFindTargetIP = txtCFindTargetIP.Text,
+                CFindTargetPort = (int)numCFindTargetPort.Value,
                 
                 // HL7 tab configuration
                 HL7TargetIP = txtHL7TargetIP.Text,
@@ -177,6 +191,12 @@ public class DicomConfig
     public string WorklistTargetAE { get; set; } = "";
     public string WorklistTargetIP { get; set; } = "";
     public int WorklistTargetPort { get; set; } = 104;
+    
+    // C-FIND specific configuration
+    public string CFindSourceAE { get; set; } = "";
+    public string CFindTargetAE { get; set; } = "";
+    public string CFindTargetIP { get; set; } = "";
+    public int CFindTargetPort { get; set; } = 104;
     
     // HL7 specific configuration
     public string HL7TargetIP { get; set; } = "127.0.0.1";
