@@ -14,6 +14,49 @@
     <Copyright>© 2025 Alexamon. All rights reserved.</Copyright>
   </PropertyGroup>
 
+  <!-- Handle the Form resources -->
+  <ItemGroup>
+    <!-- Exclude problematic resources -->
+    <EmbeddedResource Remove="Form1.DicomSend.resx" />
+    <EmbeddedResource Remove="Form1.CFindQuery.resx" />
+    <EmbeddedResource Remove="Form1.WorklistQuery.resx" />
+    <EmbeddedResource Remove="Form1.HL7Send.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Mark all form files appropriately -->
+    <Compile Update="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Form1.DicomSend.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form1.CFindQuery.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form1.WorklistQuery.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Form1.HL7Send.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+
+    <!-- Add AboutForm -->
+    <Compile Update="AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="fo-dicom" Version="5.2.2" />
     <PackageReference Include="HL7-dotnetcore" Version="2.39.1" />

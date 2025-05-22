@@ -64,6 +64,44 @@ public partial class Form1
             if (dataset.Contains(DicomTag.Parse("0040,1008")))
                 txtConfidentialityCode.Text = dataset.GetSingleValue<string>(DicomTag.Parse("0040,1008"));
                 
+            // Extract and display Rejection Note tags
+            // Code Meaning from Concept Name Code Sequence (0040,A043)
+            if (dataset.Contains(DicomTag.Parse("0040,A043")))
+            {
+                var conceptNameCodeSequence = dataset.GetSequence(DicomTag.Parse("0040,A043"));
+                if (conceptNameCodeSequence.Items.Count > 0 && 
+                    conceptNameCodeSequence.Items[0].Contains(DicomTag.CodeMeaning))
+                {
+                    txtCodeMeaning.Text = conceptNameCodeSequence.Items[0].GetSingleValue<string>(DicomTag.CodeMeaning);
+                }
+            }
+            
+            // Referenced study/series/SOP instance UIDs from Current Requested Procedure Evidence Sequence (0040,A375)
+            if (dataset.Contains(DicomTag.Parse("0040,A375")))
+            {
+                var evidenceSequence = dataset.GetSequence(DicomTag.Parse("0040,A375"));
+                if (evidenceSequence.Items.Count > 0)
+                {
+                    // Try to find referenced SOP instance
+                    if (evidenceSequence.Items[0].Contains(DicomTag.ReferencedSOPInstanceUID))
+                    {
+                        txtRefSOPInstanceUID.Text = evidenceSequence.Items[0].GetSingleValue<string>(DicomTag.ReferencedSOPInstanceUID);
+                    }
+                    
+                    // Try to find referenced series
+                    if (evidenceSequence.Items[0].Contains(DicomTag.SeriesInstanceUID))
+                    {
+                        txtRefSeriesUID.Text = evidenceSequence.Items[0].GetSingleValue<string>(DicomTag.SeriesInstanceUID);
+                    }
+                    
+                    // Try to find referenced study
+                    if (evidenceSequence.Items[0].Contains(DicomTag.StudyInstanceUID))
+                    {
+                        txtRefStudyUID.Text = evidenceSequence.Items[0].GetSingleValue<string>(DicomTag.StudyInstanceUID);
+                    }
+                }
+            }
+                
             LogMessage("DICOM tags loaded from selected file");
         }
         catch (Exception ex)
@@ -202,6 +240,49 @@ public partial class Form1
             if (!string.IsNullOrWhiteSpace(txtConfidentialityCode.Text))
                 dataset.AddOrUpdate(DicomTag.Parse("0040,1008"), txtConfidentialityCode.Text);
                 
+            // Modify rejection note tags if needed
+            if (!string.IsNullOrWhiteSpace(txtCodeMeaning.Text) ||
+                !string.IsNullOrWhiteSpace(txtRefSOPInstanceUID.Text) ||
+                !string.IsNullOrWhiteSpace(txtRefSeriesUID.Text) ||
+                !string.IsNullOrWhiteSpace(txtRefStudyUID.Text))
+            {
+                // Handle Code Meaning in Concept Name Code Sequence
+                if (!string.IsNullOrWhiteSpace(txtCodeMeaning.Text))
+                {
+                    var conceptNameCodeSequence = new DicomSequence(DicomTag.Parse("0040,A043"));
+                    var conceptNameItem = new DicomDataset();
+                    
+                    // Add standard rejection note code from DICOM
+                    conceptNameItem.Add(DicomTag.CodeValue, "113001");
+                    conceptNameItem.Add(DicomTag.CodingSchemeDesignator, "DCM");
+                    conceptNameItem.Add(DicomTag.CodeMeaning, txtCodeMeaning.Text);
+                    
+                    conceptNameCodeSequence.Items.Add(conceptNameItem);
+                    dataset.AddOrUpdate(DicomTag.Parse("0040,A043"), conceptNameCodeSequence);
+                }
+                
+                // Handle Referenced UIDs in Current Requested Procedure Evidence Sequence
+                if (!string.IsNullOrWhiteSpace(txtRefSOPInstanceUID.Text) ||
+                    !string.IsNullOrWhiteSpace(txtRefSeriesUID.Text) ||
+                    !string.IsNullOrWhiteSpace(txtRefStudyUID.Text))
+                {
+                    var evidenceSequence = new DicomSequence(DicomTag.Parse("0040,A375"));
+                    var evidenceItem = new DicomDataset();
+                    
+                    if (!string.IsNullOrWhiteSpace(txtRefSOPInstanceUID.Text))
+                        evidenceItem.Add(DicomTag.ReferencedSOPInstanceUID, txtRefSOPInstanceUID.Text);
+                        
+                    if (!string.IsNullOrWhiteSpace(txtRefSeriesUID.Text))
+                        evidenceItem.Add(DicomTag.SeriesInstanceUID, txtRefSeriesUID.Text);
+                        
+                    if (!string.IsNullOrWhiteSpace(txtRefStudyUID.Text))
+                        evidenceItem.Add(DicomTag.StudyInstanceUID, txtRefStudyUID.Text);
+                    
+                    evidenceSequence.Items.Add(evidenceItem);
+                    dataset.AddOrUpdate(DicomTag.Parse("0040,A375"), evidenceSequence);
+                }
+            }
+                
             // Save modified file
             dicomFile.Save(destPath);
             
@@ -225,6 +306,12 @@ public partial class Form1
         txtSeriesUID.Enabled = enabled;
         txtSOPInstanceUID.Enabled = enabled;
         txtConfidentialityCode.Enabled = enabled;
+        
+        // Enable/disable rejection note fields
+        txtCodeMeaning.Enabled = enabled;
+        txtRefSOPInstanceUID.Enabled = enabled;
+        txtRefSeriesUID.Enabled = enabled;
+        txtRefStudyUID.Enabled = enabled;
         
         // Enable/disable generate buttons
         btnGenerateUIDs.Enabled = enabled;
@@ -420,6 +507,12 @@ public partial class Form1
             config.SeriesUID = txtSeriesUID.Text;
             config.SOPInstanceUID = txtSOPInstanceUID.Text;
             config.ConfidentialityCode = txtConfidentialityCode.Text;
+            
+            // Update rejection note tag values
+            config.CodeMeaning = txtCodeMeaning.Text;
+            config.RefSOPInstanceUID = txtRefSOPInstanceUID.Text;
+            config.RefSeriesUID = txtRefSeriesUID.Text;
+            config.RefStudyUID = txtRefStudyUID.Text;
             
             // Save the updated config
             File.WriteAllText(configFilePath, JsonConvert.SerializeObject(config, Formatting.Indented));

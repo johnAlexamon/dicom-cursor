@@ -75,6 +75,12 @@ public partial class Form1 : Form
                     txtSOPInstanceUID.Text = config.SOPInstanceUID;
                     txtConfidentialityCode.Text = config.ConfidentialityCode;
                     
+                    // Rejection note tags
+                    txtCodeMeaning.Text = config.CodeMeaning;
+                    txtRefSOPInstanceUID.Text = config.RefSOPInstanceUID;
+                    txtRefSeriesUID.Text = config.RefSeriesUID;
+                    txtRefStudyUID.Text = config.RefStudyUID;
+                    
                     // HL7 tab configuration
                     txtHL7TargetIP.Text = config.HL7TargetIP;
                     numHL7TargetPort.Value = config.HL7TargetPort;
@@ -115,7 +121,21 @@ public partial class Form1 : Form
                 
                 // HL7 tab configuration
                 HL7TargetIP = txtHL7TargetIP.Text,
-                HL7TargetPort = (int)numHL7TargetPort.Value
+                HL7TargetPort = (int)numHL7TargetPort.Value,
+                
+                // DICOM tag values
+                PatientName = txtPatientName.Text,
+                PatientID = txtPatientID.Text,
+                StudyUID = txtStudyUID.Text,
+                SeriesUID = txtSeriesUID.Text,
+                SOPInstanceUID = txtSOPInstanceUID.Text,
+                ConfidentialityCode = txtConfidentialityCode.Text,
+                
+                // Rejection note tags
+                CodeMeaning = txtCodeMeaning.Text,
+                RefSOPInstanceUID = txtRefSOPInstanceUID.Text,
+                RefSeriesUID = txtRefSeriesUID.Text,
+                RefStudyUID = txtRefStudyUID.Text
             };
 
             File.WriteAllText(configFilePath, JsonConvert.SerializeObject(config, Formatting.Indented));
@@ -217,4 +237,10 @@ public class DicomConfig
     public string SeriesUID { get; set; } = "";
     public string SOPInstanceUID { get; set; } = "";
     public string ConfidentialityCode { get; set; } = "";
+    
+    // Rejection note tags
+    public string CodeMeaning { get; set; } = "";
+    public string RefSOPInstanceUID { get; set; } = "";
+    public string RefSeriesUID { get; set; } = "";
+    public string RefStudyUID { get; set; } = "";
 }

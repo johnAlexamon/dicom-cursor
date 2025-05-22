@@ -20,7 +20,7 @@ namespace DicomSenderApp
                 // Get version info from the executing assembly
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 Version? version = assembly.GetName().Version;
-                
+
                 if (version != null)
                 {
                     // Format as major.minor.build
@@ -51,6 +51,11 @@ namespace DicomSenderApp
             {
                 MessageBox.Show($"Unable to open link: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void lblCopyright_Click(object sender, EventArgs e)
+        {
+
         }
     }
 } 

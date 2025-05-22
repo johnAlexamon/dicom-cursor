@@ -91,6 +91,15 @@ partial class Form1
         this.btnSaveDicomTags = new System.Windows.Forms.Button();
         this.tabPageLog = new System.Windows.Forms.TabPage();
         this.btnDicomDump = new System.Windows.Forms.Button();
+        this.lblRejectionNotesHeader = new System.Windows.Forms.Label();
+        this.lblCodeMeaning = new System.Windows.Forms.Label();
+        this.txtCodeMeaning = new System.Windows.Forms.TextBox();
+        this.lblRefSOPInstanceUID = new System.Windows.Forms.Label();
+        this.txtRefSOPInstanceUID = new System.Windows.Forms.TextBox();
+        this.lblRefSeriesUID = new System.Windows.Forms.Label();
+        this.txtRefSeriesUID = new System.Windows.Forms.TextBox();
+        this.lblRefStudyUID = new System.Windows.Forms.Label();
+        this.txtRefStudyUID = new System.Windows.Forms.TextBox();
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).BeginInit();
         this.groupBox1.SuspendLayout();
         this.groupBox2.SuspendLayout();
@@ -311,6 +320,15 @@ partial class Form1
         this.groupBoxTags.Controls.Add(this.btnGenerateSOPUID);
         this.groupBoxTags.Controls.Add(this.label11);
         this.groupBoxTags.Controls.Add(this.txtConfidentialityCode);
+        this.groupBoxTags.Controls.Add(this.lblRejectionNotesHeader);
+        this.groupBoxTags.Controls.Add(this.lblCodeMeaning);
+        this.groupBoxTags.Controls.Add(this.txtCodeMeaning);
+        this.groupBoxTags.Controls.Add(this.lblRefSOPInstanceUID);
+        this.groupBoxTags.Controls.Add(this.txtRefSOPInstanceUID);
+        this.groupBoxTags.Controls.Add(this.lblRefSeriesUID);
+        this.groupBoxTags.Controls.Add(this.txtRefSeriesUID);
+        this.groupBoxTags.Controls.Add(this.lblRefStudyUID);
+        this.groupBoxTags.Controls.Add(this.txtRefStudyUID);
         this.groupBoxTags.Location = new System.Drawing.Point(12, 289);
         this.groupBoxTags.Name = "groupBoxTags";
         this.groupBoxTags.Size = new System.Drawing.Size(760, 334);
@@ -442,6 +460,84 @@ partial class Form1
         this.txtConfidentialityCode.Name = "txtConfidentialityCode";
         this.txtConfidentialityCode.Size = new System.Drawing.Size(273, 27);
         this.txtConfidentialityCode.TabIndex = 13;
+        // 
+        // lblRejectionNotesHeader
+        // 
+        this.lblRejectionNotesHeader.AutoSize = true;
+        this.lblRejectionNotesHeader.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+        this.lblRejectionNotesHeader.Location = new System.Drawing.Point(16, 225);
+        this.lblRejectionNotesHeader.Name = "lblRejectionNotesHeader";
+        this.lblRejectionNotesHeader.Size = new System.Drawing.Size(153, 20);
+        this.lblRejectionNotesHeader.TabIndex = 14;
+        this.lblRejectionNotesHeader.Text = "Rejection Note Tags:";
+        // 
+        // lblCodeMeaning
+        // 
+        this.lblCodeMeaning.AutoSize = true;
+        this.lblCodeMeaning.Location = new System.Drawing.Point(16, 258);
+        this.lblCodeMeaning.Name = "lblCodeMeaning";
+        this.lblCodeMeaning.Size = new System.Drawing.Size(107, 20);
+        this.lblCodeMeaning.TabIndex = 15;
+        this.lblCodeMeaning.Text = "Code Meaning:";
+        // 
+        // txtCodeMeaning
+        // 
+        this.txtCodeMeaning.Enabled = false;
+        this.txtCodeMeaning.Location = new System.Drawing.Point(142, 255);
+        this.txtCodeMeaning.Name = "txtCodeMeaning";
+        this.txtCodeMeaning.Size = new System.Drawing.Size(200, 27);
+        this.txtCodeMeaning.TabIndex = 16;
+        // 
+        // lblRefSOPInstanceUID
+        // 
+        this.lblRefSOPInstanceUID.AutoSize = true;
+        this.lblRefSOPInstanceUID.Location = new System.Drawing.Point(350, 258);
+        this.lblRefSOPInstanceUID.Name = "lblRefSOPInstanceUID";
+        this.lblRefSOPInstanceUID.Size = new System.Drawing.Size(136, 20);
+        this.lblRefSOPInstanceUID.TabIndex = 17;
+        this.lblRefSOPInstanceUID.Text = "Ref. SOP Inst. UID:";
+        // 
+        // txtRefSOPInstanceUID
+        // 
+        this.txtRefSOPInstanceUID.Enabled = false;
+        this.txtRefSOPInstanceUID.Location = new System.Drawing.Point(497, 255);
+        this.txtRefSOPInstanceUID.Name = "txtRefSOPInstanceUID";
+        this.txtRefSOPInstanceUID.Size = new System.Drawing.Size(273, 27);
+        this.txtRefSOPInstanceUID.TabIndex = 18;
+        // 
+        // lblRefSeriesUID
+        // 
+        this.lblRefSeriesUID.AutoSize = true;
+        this.lblRefSeriesUID.Location = new System.Drawing.Point(16, 291);
+        this.lblRefSeriesUID.Name = "lblRefSeriesUID";
+        this.lblRefSeriesUID.Size = new System.Drawing.Size(89, 20);
+        this.lblRefSeriesUID.TabIndex = 19;
+        this.lblRefSeriesUID.Text = "Ref. Series:";
+        // 
+        // txtRefSeriesUID
+        // 
+        this.txtRefSeriesUID.Enabled = false;
+        this.txtRefSeriesUID.Location = new System.Drawing.Point(142, 288);
+        this.txtRefSeriesUID.Name = "txtRefSeriesUID";
+        this.txtRefSeriesUID.Size = new System.Drawing.Size(428, 27);
+        this.txtRefSeriesUID.TabIndex = 20;
+        // 
+        // lblRefStudyUID
+        // 
+        this.lblRefStudyUID.AutoSize = true;
+        this.lblRefStudyUID.Location = new System.Drawing.Point(16, 324);
+        this.lblRefStudyUID.Name = "lblRefStudyUID";
+        this.lblRefStudyUID.Size = new System.Drawing.Size(87, 20);
+        this.lblRefStudyUID.TabIndex = 21;
+        this.lblRefStudyUID.Text = "Ref. Study:";
+        // 
+        // txtRefStudyUID
+        // 
+        this.txtRefStudyUID.Enabled = false;
+        this.txtRefStudyUID.Location = new System.Drawing.Point(142, 321);
+        this.txtRefStudyUID.Name = "txtRefStudyUID";
+        this.txtRefStudyUID.Size = new System.Drawing.Size(428, 27);
+        this.txtRefStudyUID.TabIndex = 22;
         // 
         // btnAbout
         // 
@@ -745,8 +841,6 @@ partial class Form1
         this.btnSaveDicomTags.Visible = true;
         this.btnSaveDicomTags.Click += new System.EventHandler(this.btnSaveDicomTags_Click);
 
-
-
         // 
         // tabPageLog
         // 
@@ -855,4 +949,13 @@ partial class Form1
     private System.Windows.Forms.Button btnSaveDicomTags;
     private System.Windows.Forms.TabPage tabPageLog;
     private System.Windows.Forms.Button btnDicomDump;
+    private System.Windows.Forms.Label lblRejectionNotesHeader;
+    private System.Windows.Forms.Label lblCodeMeaning;
+    private System.Windows.Forms.TextBox txtCodeMeaning;
+    private System.Windows.Forms.Label lblRefSOPInstanceUID;
+    private System.Windows.Forms.TextBox txtRefSOPInstanceUID;
+    private System.Windows.Forms.Label lblRefSeriesUID;
+    private System.Windows.Forms.TextBox txtRefSeriesUID;
+    private System.Windows.Forms.Label lblRefStudyUID;
+    private System.Windows.Forms.TextBox txtRefStudyUID;
 }
