@@ -90,6 +90,7 @@ partial class Form1
         this.splitterLog = new System.Windows.Forms.Splitter();
         this.btnSaveDicomTags = new System.Windows.Forms.Button();
         this.tabPageLog = new System.Windows.Forms.TabPage();
+        this.btnDicomDump = new System.Windows.Forms.Button();
         ((System.ComponentModel.ISupportInitialize)(this.numTargetPort)).BeginInit();
         this.groupBox1.SuspendLayout();
         this.groupBox2.SuspendLayout();
@@ -223,6 +224,18 @@ partial class Form1
         this.btnSaveConfig.UseVisualStyleBackColor = true;
         this.btnSaveConfig.Click += new System.EventHandler(this.btnSaveConfig_Click);
         // 
+        // btnDicomDump
+        // 
+        this.btnDicomDump = new System.Windows.Forms.Button();
+        this.btnDicomDump.Location = new System.Drawing.Point(514, 59);
+        this.btnDicomDump.Name = "btnDicomDump";
+        this.btnDicomDump.Size = new System.Drawing.Size(160, 29);
+        this.btnDicomDump.TabIndex = 13;
+        this.btnDicomDump.Text = "DICOM Dump";
+        this.btnDicomDump.UseVisualStyleBackColor = true;
+        this.btnDicomDump.Click += new System.EventHandler(this.btnDicomDump_Click);
+
+        // 
         // txtLog
         // 
         this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -269,9 +282,10 @@ partial class Form1
         this.groupBox2.Controls.Add(this.btnSendEcho);
         this.groupBox2.Controls.Add(this.btnSendDicom);
         this.groupBox2.Controls.Add(this.btnSaveConfig);
+        this.groupBox2.Controls.Add(this.btnDicomDump);
         this.groupBox2.Location = new System.Drawing.Point(12, 183);
         this.groupBox2.Name = "groupBox2";
-        this.groupBox2.Size = new System.Drawing.Size(530, 100);
+        this.groupBox2.Size = new System.Drawing.Size(730, 100);
         this.groupBox2.TabIndex = 16;
         this.groupBox2.TabStop = false;
         this.groupBox2.Text = "Operations";
@@ -723,9 +737,16 @@ partial class Form1
         // btnSaveDicomTags
         // 
         this.btnSaveDicomTags.Location = new System.Drawing.Point(348, 26);
+        this.btnSaveDicomTags.Name = "btnSaveDicomTags";
+        this.btnSaveDicomTags.Size = new System.Drawing.Size(132, 29);
         this.btnSaveDicomTags.Text = "Save Tags";
+        this.btnSaveDicomTags.UseVisualStyleBackColor = true;
+        this.btnSaveDicomTags.Enabled = false;
         this.btnSaveDicomTags.Visible = true;
         this.btnSaveDicomTags.Click += new System.EventHandler(this.btnSaveDicomTags_Click);
+
+
+
         // 
         // tabPageLog
         // 
@@ -738,6 +759,7 @@ partial class Form1
         this.tabPageLog.UseVisualStyleBackColor = true;
         this.tabPageLog.Controls.Add(this.txtLog);
         this.tabPageLog.Controls.Add(this.btnToggleLog);
+
         // 
         // Form1
         // 
@@ -832,4 +854,5 @@ partial class Form1
     private System.Windows.Forms.Splitter splitterLog;
     private System.Windows.Forms.Button btnSaveDicomTags;
     private System.Windows.Forms.TabPage tabPageLog;
+    private System.Windows.Forms.Button btnDicomDump;
 }

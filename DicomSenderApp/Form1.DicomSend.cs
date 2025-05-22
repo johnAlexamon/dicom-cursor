@@ -5,6 +5,7 @@ using FellowOakDicom;
 using FellowOakDicom.Network;
 using FellowOakDicom.Network.Client;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DicomSenderApp;
 
@@ -292,6 +293,105 @@ public partial class Form1
     {
         SaveDicomTagsToConfig();
         LogMessage("DICOM tag values saved to configuration");
+    }
+    
+    // Perform a full DICOM dump of all tags in the selected file
+    private void btnDicomDump_Click(object sender, EventArgs e)
+    {
+        if (string.IsNullOrEmpty(selectedDicomFilePath) || !File.Exists(selectedDicomFilePath))
+        {
+            LogMessage("Please select a DICOM file first");
+            return;
+        }
+        
+        try
+        {
+            var dicomFile = DicomFile.Open(selectedDicomFilePath);
+            
+            LogMessage($"DICOM Dump of file: {Path.GetFileName(selectedDicomFilePath)}");
+            LogMessage("=".PadRight(80, '='));
+            
+            // Dump file meta info
+            LogMessage("File Meta Information:");
+            LogAllDicomTags(dicomFile.FileMetaInfo);
+            
+            // Dump dataset
+            LogMessage("\nDataset:");
+            LogAllDicomTags(dicomFile.Dataset);
+            
+            LogMessage("=".PadRight(80, '='));
+            LogMessage("DICOM Dump completed");
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"Error performing DICOM dump: {ex.Message}");
+        }
+    }
+    
+    // Log all tags in a DICOM dataset (recursive for sequences)
+    private void LogAllDicomTags(DicomDataset dataset, string prefix = "")
+    {
+        if (dataset == null)
+            return;
+        
+        foreach (var item in dataset)
+        {
+            try
+            {
+                string value = "";
+                
+                // Handle different DICOM VRs (Value Representations)
+                if (item is DicomSequence seq)
+                {
+                    LogMessage($"{prefix}{item.Tag} [{item.ValueRepresentation}] {item.Tag.DictionaryEntry?.Name ?? "Unknown"} (Sequence with {seq.Items.Count} item(s))");
+                    int itemIndex = 0;
+                    foreach (var sequenceItem in seq.Items)
+                    {
+                        LogMessage($"{prefix}  > Item #{++itemIndex}:");
+                        LogAllDicomTags(sequenceItem, prefix + "    ");
+                    }
+                    continue;
+                }
+                else if (item is DicomElement element)
+                {
+                    if (element.Count > 0)
+                    {
+                        try
+                        {
+                            // Try to get value as string if possible
+                                                                                    if (element.Count == 1)                            {                                value = dataset.GetValueOrDefault(item.Tag, 0, string.Empty);                            }                            else
+                            {
+                                // For multi-valued elements, get all values
+                                var values = new List<string>();
+                                for (int i = 0; i < element.Count; i++)
+                                {
+                                    var itemValue = dataset.GetValueOrDefault(item.Tag, i, string.Empty);
+                                    values.Add(itemValue);
+                                }
+                                value = string.Join(" | ", values);
+                            }
+                        }
+                        catch
+                        {
+                            value = "<Unable to display value>";
+                        }
+                    }
+                }
+                
+                // Truncate very long values
+                if (value.Length > 100)
+                {
+                    value = value.Substring(0, 100) + "...";
+                }
+                
+                // Log tag, VR, name and value
+                LogMessage($"{prefix}{item.Tag} [{item.ValueRepresentation}] {item.Tag.DictionaryEntry?.Name ?? "Unknown"} = {value}");
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"{prefix}{item.Tag} Error reading tag: {ex.Message}");
+            }
+        }
     }
     
     private void SaveDicomTagsToConfig()
