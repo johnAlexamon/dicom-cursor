@@ -73,31 +73,84 @@ public partial class Form1
                     conceptNameCodeSequence.Items[0].Contains(DicomTag.CodeMeaning))
                 {
                     txtCodeMeaning.Text = conceptNameCodeSequence.Items[0].GetSingleValue<string>(DicomTag.CodeMeaning);
+                    LogMessage($"Found Code Meaning: {txtCodeMeaning.Text}");
                 }
             }
             
             // Referenced study/series/SOP instance UIDs from Current Requested Procedure Evidence Sequence (0040,A375)
             if (dataset.Contains(DicomTag.Parse("0040,A375")))
             {
+                LogMessage("Found Current Requested Procedure Evidence Sequence (0040,A375)", true);
                 var evidenceSequence = dataset.GetSequence(DicomTag.Parse("0040,A375"));
                 if (evidenceSequence.Items.Count > 0)
                 {
-                    // Try to find referenced SOP instance
-                    if (evidenceSequence.Items[0].Contains(DicomTag.ReferencedSOPInstanceUID))
+                    var evidenceItem = evidenceSequence.Items[0];
+                    
+                    // Study Instance UID - directly in the evidence item
+                    if (evidenceItem.Contains(DicomTag.StudyInstanceUID))
                     {
-                        txtRefSOPInstanceUID.Text = evidenceSequence.Items[0].GetSingleValue<string>(DicomTag.ReferencedSOPInstanceUID);
+                        txtRefStudyUID.Text = evidenceItem.GetSingleValue<string>(DicomTag.StudyInstanceUID);
+                        LogMessage($"Found Study Instance UID: {txtRefStudyUID.Text}", true);
                     }
                     
-                    // Try to find referenced series
-                    if (evidenceSequence.Items[0].Contains(DicomTag.SeriesInstanceUID))
+                    // Navigate to Referenced Series Sequence
+                    if (evidenceItem.Contains(DicomTag.Parse("0008,1115")))
                     {
-                        txtRefSeriesUID.Text = evidenceSequence.Items[0].GetSingleValue<string>(DicomTag.SeriesInstanceUID);
+                        LogMessage("Found Referenced Series Sequence (0008,1115)", true);
+                        var seriesSequence = evidenceItem.GetSequence(DicomTag.Parse("0008,1115"));
+                        if (seriesSequence.Items.Count > 0)
+                        {
+                            var seriesItem = seriesSequence.Items[0];
+                            
+                            // Series Instance UID
+                            if (seriesItem.Contains(DicomTag.SeriesInstanceUID))
+                            {
+                                txtRefSeriesUID.Text = seriesItem.GetSingleValue<string>(DicomTag.SeriesInstanceUID);
+                                LogMessage($"Found Series Instance UID: {txtRefSeriesUID.Text}", true);
+                            }
+                            
+                            // Navigate to Referenced SOP Sequence
+                            if (seriesItem.Contains(DicomTag.Parse("0008,1199")))
+                            {
+                                LogMessage("Found Referenced SOP Sequence (0008,1199)", true);
+                                var sopSequence = seriesItem.GetSequence(DicomTag.Parse("0008,1199"));
+                                if (sopSequence.Items.Count > 0)
+                                {
+                                    var sopItem = sopSequence.Items[0];
+                                    
+                                    // SOP Instance UID
+                                    if (sopItem.Contains(DicomTag.ReferencedSOPInstanceUID))
+                                    {
+                                        txtRefSOPInstanceUID.Text = sopItem.GetSingleValue<string>(DicomTag.ReferencedSOPInstanceUID);
+                                        LogMessage($"Found Referenced SOP Instance UID: {txtRefSOPInstanceUID.Text}", true);
+                                    }
+                                }
+                            }
+                        }
                     }
                     
-                    // Try to find referenced study
-                    if (evidenceSequence.Items[0].Contains(DicomTag.StudyInstanceUID))
+                    // Try alternate path via Content Sequence if UIDs weren't found
+                    if (string.IsNullOrEmpty(txtRefSOPInstanceUID.Text) && dataset.Contains(DicomTag.Parse("0040,a730")))
                     {
-                        txtRefStudyUID.Text = evidenceSequence.Items[0].GetSingleValue<string>(DicomTag.StudyInstanceUID);
+                        LogMessage("Trying alternate path via Content Sequence (0040,a730)", true);
+                        var contentSequence = dataset.GetSequence(DicomTag.Parse("0040,a730"));
+                        if (contentSequence.Items.Count > 0)
+                        {
+                            var contentItem = contentSequence.Items[0];
+                            if (contentItem.Contains(DicomTag.Parse("0008,1199")))
+                            {
+                                var sopSequence = contentItem.GetSequence(DicomTag.Parse("0008,1199"));
+                                if (sopSequence.Items.Count > 0)
+                                {
+                                    var sopItem = sopSequence.Items[0];
+                                    if (sopItem.Contains(DicomTag.ReferencedSOPInstanceUID))
+                                    {
+                                        txtRefSOPInstanceUID.Text = sopItem.GetSingleValue<string>(DicomTag.ReferencedSOPInstanceUID);
+                                        LogMessage($"Found Referenced SOP Instance UID (alternate path): {txtRefSOPInstanceUID.Text}", true);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -259,6 +312,8 @@ public partial class Form1
                     
                     conceptNameCodeSequence.Items.Add(conceptNameItem);
                     dataset.AddOrUpdate(DicomTag.Parse("0040,A043"), conceptNameCodeSequence);
+                    
+                    LogMessage("Added Concept Name Code Sequence with Code Meaning", true);
                 }
                 
                 // Handle Referenced UIDs in Current Requested Procedure Evidence Sequence
@@ -269,17 +324,75 @@ public partial class Form1
                     var evidenceSequence = new DicomSequence(DicomTag.Parse("0040,A375"));
                     var evidenceItem = new DicomDataset();
                     
-                    if (!string.IsNullOrWhiteSpace(txtRefSOPInstanceUID.Text))
-                        evidenceItem.Add(DicomTag.ReferencedSOPInstanceUID, txtRefSOPInstanceUID.Text);
-                        
-                    if (!string.IsNullOrWhiteSpace(txtRefSeriesUID.Text))
-                        evidenceItem.Add(DicomTag.SeriesInstanceUID, txtRefSeriesUID.Text);
-                        
+                    // Add Study Instance UID directly to the evidence item
                     if (!string.IsNullOrWhiteSpace(txtRefStudyUID.Text))
+                    {
                         evidenceItem.Add(DicomTag.StudyInstanceUID, txtRefStudyUID.Text);
+                        LogMessage($"Added Study Instance UID to evidence: {txtRefStudyUID.Text}", true);
+                    }
+                    
+                    // Create the Referenced Series Sequence if Series or SOP Instance UIDs are provided
+                    if (!string.IsNullOrWhiteSpace(txtRefSeriesUID.Text) || 
+                        !string.IsNullOrWhiteSpace(txtRefSOPInstanceUID.Text))
+                    {
+                        var seriesSequence = new DicomSequence(DicomTag.Parse("0008,1115"));
+                        var seriesItem = new DicomDataset();
+                        
+                        // Add Series Instance UID to the series item
+                        if (!string.IsNullOrWhiteSpace(txtRefSeriesUID.Text))
+                        {
+                            seriesItem.Add(DicomTag.SeriesInstanceUID, txtRefSeriesUID.Text);
+                            LogMessage($"Added Series Instance UID to series: {txtRefSeriesUID.Text}", true);
+                        }
+                        
+                        // Create the Referenced SOP Sequence if SOP Instance UID is provided
+                        if (!string.IsNullOrWhiteSpace(txtRefSOPInstanceUID.Text))
+                        {
+                            var sopSequence = new DicomSequence(DicomTag.Parse("0008,1199"));
+                            var sopItem = new DicomDataset();
+                            
+                            // Add SOP Class UID and SOP Instance UID to the SOP item
+                            sopItem.Add(DicomTag.ReferencedSOPClassUID, "1.2.840.10008.5.1.4.1.1.7"); // Secondary Capture Image Storage
+                            sopItem.Add(DicomTag.ReferencedSOPInstanceUID, txtRefSOPInstanceUID.Text);
+                            
+                            LogMessage($"Added Referenced SOP Instance UID to SOP sequence: {txtRefSOPInstanceUID.Text}", true);
+                            
+                            sopSequence.Items.Add(sopItem);
+                            seriesItem.AddOrUpdate(DicomTag.Parse("0008,1199"), sopSequence);
+                        }
+                        
+                        seriesSequence.Items.Add(seriesItem);
+                        evidenceItem.AddOrUpdate(DicomTag.Parse("0008,1115"), seriesSequence);
+                    }
                     
                     evidenceSequence.Items.Add(evidenceItem);
                     dataset.AddOrUpdate(DicomTag.Parse("0040,A375"), evidenceSequence);
+                    
+                    LogMessage("Added Current Requested Procedure Evidence Sequence", true);
+                    
+                    // Also add to Content Sequence for completeness
+                    if (!string.IsNullOrWhiteSpace(txtRefSOPInstanceUID.Text))
+                    {
+                        var contentSequence = new DicomSequence(DicomTag.Parse("0040,a730"));
+                        var contentItem = new DicomDataset();
+                        
+                        contentItem.Add(DicomTag.Parse("0040,a010"), "CONTAINS"); // Relationship Type
+                        contentItem.Add(DicomTag.Parse("0040,a040"), "IMAGE"); // Value Type
+                        
+                        var sopSequence = new DicomSequence(DicomTag.Parse("0008,1199"));
+                        var sopItem = new DicomDataset();
+                        
+                        sopItem.Add(DicomTag.ReferencedSOPClassUID, "1.2.840.10008.5.1.4.1.1.7"); // Secondary Capture Image Storage
+                        sopItem.Add(DicomTag.ReferencedSOPInstanceUID, txtRefSOPInstanceUID.Text);
+                        
+                        sopSequence.Items.Add(sopItem);
+                        contentItem.AddOrUpdate(DicomTag.Parse("0008,1199"), sopSequence);
+                        
+                        contentSequence.Items.Add(contentItem);
+                        dataset.AddOrUpdate(DicomTag.Parse("0040,a730"), contentSequence);
+                        
+                        LogMessage("Added Content Sequence with Referenced SOP Instance", true);
+                    }
                 }
             }
                 
@@ -516,6 +629,7 @@ public partial class Form1
             
             // Save the updated config
             File.WriteAllText(configFilePath, JsonConvert.SerializeObject(config, Formatting.Indented));
+            LogMessage("Saved DICOM tag and rejection note values to configuration");
         }
         catch (Exception ex)
         {
